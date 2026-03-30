@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GA4 BQエクスポート RAW層 スキーマ定義</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fafafa;--surface:#fff;--border:#e2e8f0;--border-light:#f1f5f9;--text:#1e293b;--text-s:#64748b;--text-m:#94a3b8;--accent:#2563eb;--rec-bg:#fefce8;--rec-t:#854d0e;--list-bg:#f0fdf4;--list-t:#166534;--sc-bg:#f8fafc;--sc-t:#475569;--req-bg:#fef2f2;--req-t:#dc2626;--nul-bg:#f0f9ff;--nul-t:#0369a1;--rep-bg:#faf5ff;--rep-t:#7c3aed;--exp-hover:#dbeafe;--child-l:#e2e8f0;--sh:0 1px 3px rgba(0,0,0,.06);--shm:0 4px 6px rgba(0,0,0,.05)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;padding:2rem}
+.container{max-width:1200px;margin:0 auto}
+h1{font-size:1.5rem;font-weight:700;margin-bottom:.25rem}
+.subtitle{font-size:.85rem;color:var(--text-s);margin-bottom:2rem}
+.subtitle a{color:var(--accent);text-decoration:none}
+.subtitle a:hover{text-decoration:underline}
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.8rem;margin-bottom:1.5rem}
+.mc{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.8rem 1rem;box-shadow:var(--sh)}
+.mc dt{font-size:.65rem;font-weight:500;text-transform:uppercase;letter-spacing:.05em;color:var(--text-m);margin-bottom:.15rem}
+.mc dd{font-size:.82rem;font-weight:500;font-family:'JetBrains Mono',monospace}
+.legend{display:flex;flex-wrap:wrap;gap:.6rem;margin-bottom:1.2rem;font-size:.72rem}
+.legend-item{display:inline-flex;align-items:center;gap:.3rem}
+.badge{display:inline-block;padding:.08rem .4rem;border-radius:4px;font-size:.62rem;font-weight:500;font-family:'JetBrains Mono',monospace;white-space:nowrap}
+.b-int{background:#eef2ff;color:#4338ca}.b-str{background:#f0fdf4;color:#166534}.b-flt{background:#fff7ed;color:#c2410c}.b-bool{background:#fdf2f8;color:#be185d}
+.sb{display:inline-block;padding:.08rem .4rem;border-radius:4px;font-size:.62rem;font-weight:500;font-family:'JetBrains Mono',monospace}
+.s-sc{background:var(--sc-bg);color:var(--sc-t)}.s-rec{background:var(--rec-bg);color:var(--rec-t)}.s-list{background:var(--list-bg);color:var(--list-t)}
+.tw{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow-x:auto;box-shadow:var(--shm);margin-bottom:2rem}
+.tt{padding:.9rem 1.2rem;font-size:1rem;font-weight:700;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.5rem}
+.tt code{font-family:'JetBrains Mono',monospace;font-size:.92rem;color:var(--accent)}
+.td{padding:.4rem 1.2rem .6rem;font-size:.75rem;color:var(--text-s);border-bottom:1px solid var(--border-light)}
+.td a{color:var(--accent);text-decoration:none}
+table{width:100%;border-collapse:collapse;font-size:.78rem}
+thead th{background:#f8fafc;padding:.5rem .7rem;text-align:left;font-weight:600;font-size:.65rem;text-transform:uppercase;letter-spacing:.04em;color:var(--text-s);border-bottom:2px solid var(--border);position:sticky;top:0;z-index:10;white-space:nowrap}
+tbody tr{border-bottom:1px solid var(--border-light)}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:#fafbfd}
+td{padding:.45rem .7rem;vertical-align:top}
+.cn{width:2.8rem;color:var(--text-m);font-family:'JetBrains Mono',monospace;font-size:.68rem}
+.fn{font-family:'JetBrains Mono',monospace;font-weight:500;font-size:.75rem}
+.fn.ch{color:var(--text-s);font-weight:400}
+.bt{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-s)}
+.dt{font-size:.75rem;color:var(--text-s);line-height:1.45}
+.er{cursor:pointer;user-select:none;transition:background .15s}
+.er:hover{background:var(--exp-hover)!important}
+.ei{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:3px;background:var(--border);color:var(--text-s);font-size:.6rem;margin-right:.3rem;transition:transform .2s,background .15s;flex-shrink:0;font-family:'JetBrains Mono',monospace;font-weight:700}
+.er.expanded .ei{transform:rotate(90deg);background:var(--accent);color:#fff}
+.cr{display:none}.cr.v{display:table-row}
+.cr td{background:#fcfcfe;border-left:3px solid var(--child-l)}
+.fw{display:flex;align-items:center}
+.note-box{margin:1rem 1.2rem 1.5rem;padding:.8rem 1rem;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;font-size:.78rem;color:#92400e;line-height:1.6}
+.note-box strong{font-weight:600}
+.note-box code{font-family:'JetBrains Mono',monospace;font-size:.7rem;background:#fef3c7;padding:.05rem .25rem;border-radius:3px}
+.toc{margin-bottom:2rem;padding:1rem 1.5rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;box-shadow:var(--sh)}
+.toc h2{font-size:.85rem;font-weight:600;margin-bottom:.5rem;color:var(--text-s)}
+.toc ul{list-style:none;display:flex;flex-wrap:wrap;gap:.4rem 1.2rem}
+.toc a{font-size:.8rem;color:var(--accent);text-decoration:none;font-family:'JetBrains Mono',monospace}
+.toc a:hover{text-decoration:underline}
+.section-head{padding:.6rem 1.2rem;font-size:.82rem;font-weight:600;background:#f8fafc;border-bottom:1px solid var(--border);color:var(--text)}
+@media(max-width:900px){body{padding:1rem}.meta{grid-template-columns:1fr}td,th{padding:.3rem .4rem;font-size:.72rem}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>GA4 BigQueryエクスポート RAW層 スキーマ定義</h1>
+<p class="subtitle">
+  ソース: <a href="https://support.google.com/analytics/answer/7029846?hl=en" target="_blank">GA4 BigQuery Export schema（Google公式）</a>
+</p>
+
+<div class="meta">
+  <dl class="mc"><dt>テーブル名</dt><dd>events_YYYYMMDD</dd></dl>
+  <dl class="mc"><dt>データセット</dt><dd>analytics_{property_id}</dd></dl>
+  <dl class="mc"><dt>生成方式</dt><dd>BQエクスポート自動生成</dd></dl>
+  <dl class="mc"><dt>粒度</dt><dd>1イベント1行</dd></dl>
+</div>
+
+<div class="note-box" style="margin:0 0 1.5rem;">
+  <strong>このテーブルはGA4が自動生成するため、RAW層の設計対象外です。</strong><br>
+  BQリンク設定を有効化すると、日次で <code>events_YYYYMMDD</code> テーブルが自動作成されます。カラム名・型はGoogleが定義したもので変更できません。<br>
+  このドキュメントはSTAGING層以降の設計時にスキーマを参照するためのリファレンスです。
+</div>
+
+<nav class="toc">
+<h2>セクション</h2>
+<ul>
+<li><a href="#sec-event">event（イベント基本）</a></li>
+<li><a href="#sec-event-params">event_params（イベントパラメータ）</a></li>
+<li><a href="#sec-user">user（ユーザー）</a></li>
+<li><a href="#sec-device">device（デバイス）</a></li>
+<li><a href="#sec-geo">geo（地域）</a></li>
+<li><a href="#sec-traffic">traffic_source / collected_traffic_source</a></li>
+<li><a href="#sec-ecommerce">ecommerce（EC）</a></li>
+<li><a href="#sec-items">items（商品）</a></li>
+<li><a href="#sec-other">stream / platform / その他</a></li>
+</ul>
+</nav>
+
+<div class="legend">
+<span class="legend-item"><span class="badge b-str">STRING</span></span>
+<span class="legend-item"><span class="badge b-int">INTEGER</span></span>
+<span class="legend-item"><span class="badge b-flt">FLOAT</span></span>
+<span class="legend-item"><span class="badge b-bool">BOOLEAN</span></span>
+<span class="legend-item"><span class="sb s-sc">スカラー</span></span>
+<span class="legend-item"><span class="sb s-rec">RECORD</span> クリックで展開</span>
+<span class="legend-item"><span class="sb s-list">REPEATED</span> 配列</span>
+</div>
+
+<!-- ==================== event ==================== -->
+<div class="tw" id="sec-event">
+<div class="section-head">event — イベント基本フィールド</div>
+<table><thead><tr><th class="cn">#</th><th style="width:30%">フィールド名</th><th style="width:10%">型</th><th style="width:7%">構造</th><th>説明</th></tr></thead>
+<tbody>
+<tr><td class="cn">1</td><td><span class="fn">event_date</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">イベント日付（YYYYMMDD形式、プロパティのタイムゾーン）</span></td></tr>
+<tr><td class="cn">2</td><td><span class="fn">event_timestamp</span></td><td><span class="badge b-int">INTEGER</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">イベント受信時刻（マイクロ秒、UTC）</span></td></tr>
+<tr><td class="cn">3</td><td><span class="fn">event_previous_timestamp</span></td><td><span class="badge b-int">INTEGER</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">前回イベント時刻（マイクロ秒、UTC）</span></td></tr>
+<tr><td class="cn">4</td><td><span class="fn">event_name</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">イベント名（page_view, purchase 等）</span></td></tr>
+<tr><td class="cn">5</td><td><span class="fn">event_value_in_usd</span></td><td><span class="badge b-flt">FLOAT</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">イベントのvalue（USD換算）</span></td></tr>
+<tr><td class="cn">6</td><td><span class="fn">event_bundle_sequence_id</span></td><td><span class="badge b-int">INTEGER</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">バンドルのシーケンスID</span></td></tr>
+<tr><td class="cn">7</td><td><span class="fn">event_server_timestamp_offset</span></td><td><span class="badge b-int">INTEGER</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">収集時刻とアップロード時刻のオフセット（マイクロ秒）</span></td></tr>
+<tr><td class="cn">8</td><td><span class="fn">batch_event_index</span></td><td><span class="badge b-int">INTEGER</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">バッチ内のイベント順序番号</span></td></tr>
+<tr><td class="cn">9</td><td><span class="fn">batch_ordering_id</span></td><td><span class="badge b-int">INTEGER</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">ネットワークリクエストごとの単調増加番号</span></td></tr>
+<tr><td class="cn">10</td><td><span class="fn">batch_page_id</span></td><td><span class="badge b-int">INTEGER</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">ページごとのシーケンス番号</span></td></tr>
+</tbody></table></div>
+
+<!-- ==================== event_params ==================== -->
+<div class="tw" id="sec-event-params">
+<div class="section-head">event_params — イベントパラメータ（REPEATED RECORD）</div>
+<div class="note-box">
+  イベントごとに複数のパラメータが格納されるREPEATED RECORD。<code>UNNEST(event_params)</code> で展開して使用。<br>
+  格納されるパラメータはイベントにより異なる。代表的なキー：<code>page_location</code>, <code>page_title</code>, <code>ga_session_id</code>, <code>ga_session_number</code>, <code>source</code>, <code>medium</code>, <code>engagement_time_msec</code> 等。
+</div>
+<table><thead><tr><th class="cn">#</th><th style="width:30%">フィールド名</th><th style="width:10%">型</th><th style="width:7%">構造</th><th>説明</th></tr></thead>
+<tbody>
+<tr><td class="cn">1</td><td><span class="fn">event_params.key</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">パラメータ名</span></td></tr>
+<tr><td class="cn">2</td><td><span class="fn">event_params.value.string_value</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">文字列値（URL、キャンペーン名等）</span></td></tr>
+<tr><td class="cn">3</td><td><span class="fn">event_params.value.int_value</span></td><td><span class="badge b-int">INTEGER</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">整数値</span></td></tr>
+<tr><td class="cn">4</td><td><span class="fn">event_params.value.double_value</span></td><td><span class="badge b-flt">FLOAT</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">倍精度浮動小数点値</span></td></tr>
+<tr><td class="cn">5</td><td><span class="fn">event_params.value.float_value</span></td><td><span class="badge b-flt">FLOAT</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">浮動小数点値（現在未使用）</span></td></tr>
+</tbody></table></div>
+
+<!-- ==================== user ==================== -->
+<div class="tw" id="sec-user">
+<div class="section-head">user — ユーザーフィールド</div>
+<table><thead><tr><th class="cn">#</th><th style="width:30%">フィールド名</th><th style="width:10%">型</th><th style="width:7%">構造</th><th>説明</th></tr></thead>
+<tbody>
+<tr><td class="cn">1</td><td><span class="fn">user_id</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">setUserIdで設定されたユーザーID（ログイン時のみ）</span></td></tr>
+<tr><td class="cn">2</td><td><span class="fn">user_pseudo_id</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">擬似ID（アプリインスタンスID / ブラウザのclient_id相当）</span></td></tr>
+<tr><td class="cn">3</td><td><span class="fn">user_first_touch_timestamp</span></td><td><span class="badge b-int">INTEGER</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">ユーザーが初めてアプリ/サイトにアクセスした時刻（マイクロ秒）</span></td></tr>
+<tr><td class="cn">4</td><td><span class="fn">is_active_user</span></td><td><span class="badge b-bool">BOOLEAN</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">その日にアクティブだったか（日次テーブルのみ）</span></td></tr>
+<!-- privacy_info -->
+<tr class="er" data-target="privacy"><td class="cn">5</td><td><span class="fw"><span class="ei">▶</span><span class="fn">privacy_info</span></span></td><td><span class="sb s-rec">RECORD</span></td><td><span class="sb s-rec">RECORD</span></td><td><span class="dt">同意モード情報</span></td></tr>
+<tr class="cr" data-parent="privacy"><td class="cn">5-1</td><td><span class="fn ch">.ads_storage</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">広告ターゲティング有効か（Yes / No / Unset）</span></td></tr>
+<tr class="cr" data-parent="privacy"><td class="cn">5-2</td><td><span class="fn ch">.analytics_storage</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">Analytics保存有効か</span></td></tr>
+<tr class="cr" data-parent="privacy"><td class="cn">5-3</td><td><span class="fn ch">.uses_transient_token</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">一時トークンを使用しているか</span></td></tr>
+<!-- user_properties -->
+<tr class="er" data-target="uprops"><td class="cn">6</td><td><span class="fw"><span class="ei">▶</span><span class="fn">user_properties</span></span></td><td><span class="sb s-list">REPEATED</span></td><td><span class="sb s-list">REPEATED</span></td><td><span class="dt">ユーザープロパティ（REPEATED RECORD）</span></td></tr>
+<tr class="cr" data-parent="uprops"><td class="cn">6-1</td><td><span class="fn ch">.key</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">プロパティ名</span></td></tr>
+<tr class="cr" data-parent="uprops"><td class="cn">6-2</td><td><span class="fn ch">.value.string_value</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">文字列値</span></td></tr>
+<tr class="cr" data-parent="uprops"><td class="cn">6-3</td><td><span class="fn ch">.value.int_value</span></td><td><span class="badge b-int">INTEGER</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">整数値</span></td></tr>
+<tr class="cr" data-parent="uprops"><td class="cn">6-4</td><td><span class="fn ch">.value.double_value</span></td><td><span class="badge b-flt">FLOAT</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">倍精度値</span></td></tr>
+<tr class="cr" data-parent="uprops"><td class="cn">6-5</td><td><span class="fn ch">.value.float_value</span></td><td><span class="badge b-flt">FLOAT</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">浮動小数点値（現在未使用）</span></td></tr>
+<tr class="cr" data-parent="uprops"><td class="cn">6-6</td><td><span class="fn ch">.value.set_timestamp_micros</span></td><td><span class="badge b-int">INTEGER</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">最終設定時刻（マイクロ秒）</span></td></tr>
+<!-- user_ltv -->
+<tr class="er" data-target="ultv"><td class="cn">7</td><td><span class="fw"><span class="ei">▶</span><span class="fn">user_ltv</span></span></td><td><span class="sb s-rec">RECORD</span></td><td><span class="sb s-rec">RECORD</span></td><td><span class="dt">ユーザーLTV（日次テーブルのみ）</span></td></tr>
+<tr class="cr" data-parent="ultv"><td class="cn">7-1</td><td><span class="fn ch">.revenue</span></td><td><span class="badge b-flt">FLOAT</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">LTV収益</span></td></tr>
+<tr class="cr" data-parent="ultv"><td class="cn">7-2</td><td><span class="fn ch">.currency</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">LTV通貨</span></td></tr>
+</tbody></table></div>
+
+<!-- ==================== device ==================== -->
+<div class="tw" id="sec-device">
+<div class="section-head">device — デバイス情報（RECORD）</div>
+<table><thead><tr><th class="cn">#</th><th style="width:30%">フィールド名</th><th style="width:10%">型</th><th style="width:7%">構造</th><th>説明</th></tr></thead>
+<tbody>
+<tr><td class="cn">1</td><td><span class="fn">device.category</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">デバイスカテゴリ（mobile / tablet / desktop）</span></td></tr>
+<tr><td class="cn">2</td><td><span class="fn">device.mobile_brand_name</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">デバイスブランド名</span></td></tr>
+<tr><td class="cn">3</td><td><span class="fn">device.mobile_model_name</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">デバイスモデル名</span></td></tr>
+<tr><td class="cn">4</td><td><span class="fn">device.mobile_marketing_name</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">デバイスマーケティング名</span></td></tr>
+<tr><td class="cn">5</td><td><span class="fn">device.mobile_os_hardware_model</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">OSから取得したデバイスモデル</span></td></tr>
+<tr><td class="cn">6</td><td><span class="fn">device.operating_system</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">OS名</span></td></tr>
+<tr><td class="cn">7</td><td><span class="fn">device.operating_system_version</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">OSバージョン</span></td></tr>
+<tr><td class="cn">8</td><td><span class="fn">device.vendor_id</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">IDFV（IDFAが未収集の場合のみ）</span></td></tr>
+<tr><td class="cn">9</td><td><span class="fn">device.advertising_id</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">広告ID / IDFA</span></td></tr>
+<tr><td class="cn">10</td><td><span class="fn">device.language</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">OS言語</span></td></tr>
+<tr><td class="cn">11</td><td><span class="fn">device.time_zone_offset_seconds</span></td><td><span class="badge b-int">INTEGER</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">GMTからのオフセット（秒）</span></td></tr>
+<tr><td class="cn">12</td><td><span class="fn">device.is_limited_ad_tracking</span></td><td><span class="badge b-bool">BOOLEAN</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">広告トラッキング制限設定</span></td></tr>
+<tr><td class="cn">13</td><td><span class="fn">device.web_info.browser</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">ブラウザ名</span></td></tr>
+<tr><td class="cn">14</td><td><span class="fn">device.web_info.browser_version</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">ブラウザバージョン</span></td></tr>
+<tr><td class="cn">15</td><td><span class="fn">device.web_info.hostname</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">ホスト名</span></td></tr>
+</tbody></table></div>
+
+<!-- ==================== geo ==================== -->
+<div class="tw" id="sec-geo">
+<div class="section-head">geo — 地域情報（RECORD）</div>
+<table><thead><tr><th class="cn">#</th><th style="width:30%">フィールド名</th><th style="width:10%">型</th><th style="width:7%">構造</th><th>説明</th></tr></thead>
+<tbody>
+<tr><td class="cn">1</td><td><span class="fn">geo.continent</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">大陸（IPアドレスベース）</span></td></tr>
+<tr><td class="cn">2</td><td><span class="fn">geo.sub_continent</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">亜大陸</span></td></tr>
+<tr><td class="cn">3</td><td><span class="fn">geo.country</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">国</span></td></tr>
+<tr><td class="cn">4</td><td><span class="fn">geo.region</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">地域</span></td></tr>
+<tr><td class="cn">5</td><td><span class="fn">geo.metro</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">都市圏</span></td></tr>
+<tr><td class="cn">6</td><td><span class="fn">geo.city</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">都市</span></td></tr>
+</tbody></table></div>
+
+<!-- ==================== traffic_source ==================== -->
+<div class="tw" id="sec-traffic">
+<div class="section-head">traffic_source / collected_traffic_source — トラフィックソース</div>
+<table><thead><tr><th class="cn">#</th><th style="width:30%">フィールド名</th><th style="width:10%">型</th><th style="width:7%">構造</th><th>説明</th></tr></thead>
+<tbody>
+<tr><td class="cn" colspan="5" style="background:#f8fafc;font-weight:600;color:var(--text-s);font-size:.72rem">traffic_source（初回獲得ソース。日次テーブルのみ。値は変化しない）</td></tr>
+<tr><td class="cn">1</td><td><span class="fn">traffic_source.name</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">初回獲得キャンペーン名</span></td></tr>
+<tr><td class="cn">2</td><td><span class="fn">traffic_source.medium</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">初回獲得メディア</span></td></tr>
+<tr><td class="cn">3</td><td><span class="fn">traffic_source.source</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">初回獲得ソース</span></td></tr>
+<tr><td class="cn" colspan="5" style="background:#f8fafc;font-weight:600;color:var(--text-s);font-size:.72rem">collected_traffic_source（イベント収集時のトラフィックソース）</td></tr>
+<tr><td class="cn">4</td><td><span class="fn">collected_traffic_source.manual_campaign_id</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">utm_id</span></td></tr>
+<tr><td class="cn">5</td><td><span class="fn">collected_traffic_source.manual_campaign_name</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">utm_campaign</span></td></tr>
+<tr><td class="cn">6</td><td><span class="fn">collected_traffic_source.manual_source</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">utm_source</span></td></tr>
+<tr><td class="cn">7</td><td><span class="fn">collected_traffic_source.manual_medium</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">utm_medium</span></td></tr>
+<tr><td class="cn">8</td><td><span class="fn">collected_traffic_source.manual_term</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">utm_term</span></td></tr>
+<tr><td class="cn">9</td><td><span class="fn">collected_traffic_source.manual_content</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">utm_content</span></td></tr>
+<tr><td class="cn">10</td><td><span class="fn">collected_traffic_source.manual_creative_format</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">utm_creative_format</span></td></tr>
+<tr><td class="cn">11</td><td><span class="fn">collected_traffic_source.manual_marketing_tactic</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">utm_marketing_tactic</span></td></tr>
+<tr><td class="cn">12</td><td><span class="fn">collected_traffic_source.manual_source_platform</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">utm_source_platform</span></td></tr>
+<tr><td class="cn">13</td><td><span class="fn">collected_traffic_source.gclid</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">Google Click Identifier</span></td></tr>
+<tr><td class="cn">14</td><td><span class="fn">collected_traffic_source.dclid</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">DoubleClick Click Identifier</span></td></tr>
+<tr><td class="cn">15</td><td><span class="fn">collected_traffic_source.srsltid</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">Google Merchant Center ID</span></td></tr>
+</tbody></table>
+<div class="note-box">
+  <strong>session_traffic_source_last_click</strong> も存在しますが、フィールド数が60以上（Google Ads / SA360 / DV360 / CM360のキャンペーン詳細）と非常に多いため、ここでは省略しています。主に広告アトリビューション分析で使用します。
+</div>
+</div>
+
+<!-- ==================== ecommerce ==================== -->
+<div class="tw" id="sec-ecommerce">
+<div class="section-head">ecommerce — EC情報（RECORD）</div>
+<table><thead><tr><th class="cn">#</th><th style="width:30%">フィールド名</th><th style="width:10%">型</th><th style="width:7%">構造</th><th>説明</th></tr></thead>
+<tbody>
+<tr><td class="cn">1</td><td><span class="fn">ecommerce.total_item_quantity</span></td><td><span class="badge b-int">INTEGER</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">商品数合計（items.quantityの合計）</span></td></tr>
+<tr><td class="cn">2</td><td><span class="fn">ecommerce.purchase_revenue_in_usd</span></td><td><span class="badge b-flt">FLOAT</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">購入収益（USD）※purchaseイベントのみ</span></td></tr>
+<tr><td class="cn">3</td><td><span class="fn">ecommerce.purchase_revenue</span></td><td><span class="badge b-flt">FLOAT</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">購入収益（ローカル通貨）</span></td></tr>
+<tr><td class="cn">4</td><td><span class="fn">ecommerce.refund_value_in_usd</span></td><td><span class="badge b-flt">FLOAT</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">返金額（USD）※refundイベントのみ</span></td></tr>
+<tr><td class="cn">5</td><td><span class="fn">ecommerce.refund_value</span></td><td><span class="badge b-flt">FLOAT</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">返金額（ローカル通貨）</span></td></tr>
+<tr><td class="cn">6</td><td><span class="fn">ecommerce.shipping_value_in_usd</span></td><td><span class="badge b-flt">FLOAT</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">送料（USD）</span></td></tr>
+<tr><td class="cn">7</td><td><span class="fn">ecommerce.shipping_value</span></td><td><span class="badge b-flt">FLOAT</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">送料（ローカル通貨）</span></td></tr>
+<tr><td class="cn">8</td><td><span class="fn">ecommerce.tax_value_in_usd</span></td><td><span class="badge b-flt">FLOAT</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">税額（USD）</span></td></tr>
+<tr><td class="cn">9</td><td><span class="fn">ecommerce.tax_value</span></td><td><span class="badge b-flt">FLOAT</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">税額（ローカル通貨）</span></td></tr>
+<tr><td class="cn">10</td><td><span class="fn">ecommerce.transaction_id</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">トランザクションID</span></td></tr>
+<tr><td class="cn">11</td><td><span class="fn">ecommerce.unique_items</span></td><td><span class="badge b-int">INTEGER</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">ユニーク商品数（item_id/name/brandベース）</span></td></tr>
+</tbody></table></div>
+
+<!-- ==================== items ==================== -->
+<div class="tw" id="sec-items">
+<div class="section-head">items — 商品情報（REPEATED RECORD）</div>
+<div class="note-box">
+  ECイベント（view_item, add_to_cart, purchase等）に含まれる商品リスト。<code>UNNEST(items)</code> で展開して使用。
+</div>
+<table><thead><tr><th class="cn">#</th><th style="width:30%">フィールド名</th><th style="width:10%">型</th><th style="width:7%">構造</th><th>説明</th></tr></thead>
+<tbody>
+<tr><td class="cn">1</td><td><span class="fn">items.item_id</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">商品ID</span></td></tr>
+<tr><td class="cn">2</td><td><span class="fn">items.item_name</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">商品名</span></td></tr>
+<tr><td class="cn">3</td><td><span class="fn">items.item_brand</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">ブランド</span></td></tr>
+<tr><td class="cn">4</td><td><span class="fn">items.item_variant</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">バリアント</span></td></tr>
+<tr><td class="cn">5</td><td><span class="fn">items.item_category</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">カテゴリ</span></td></tr>
+<tr><td class="cn">6</td><td><span class="fn">items.item_category2</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">サブカテゴリ2</span></td></tr>
+<tr><td class="cn">7</td><td><span class="fn">items.item_category3</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">サブカテゴリ3</span></td></tr>
+<tr><td class="cn">8</td><td><span class="fn">items.item_category4</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">サブカテゴリ4</span></td></tr>
+<tr><td class="cn">9</td><td><span class="fn">items.item_category5</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">サブカテゴリ5</span></td></tr>
+<tr><td class="cn">10</td><td><span class="fn">items.price_in_usd</span></td><td><span class="badge b-flt">FLOAT</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">単価（USD）</span></td></tr>
+<tr><td class="cn">11</td><td><span class="fn">items.price</span></td><td><span class="badge b-flt">FLOAT</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">単価（ローカル通貨）</span></td></tr>
+<tr><td class="cn">12</td><td><span class="fn">items.quantity</span></td><td><span class="badge b-int">INTEGER</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">数量（未指定時は1）</span></td></tr>
+<tr><td class="cn">13</td><td><span class="fn">items.item_revenue_in_usd</span></td><td><span class="badge b-flt">FLOAT</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">商品収益（USD）※purchaseのみ</span></td></tr>
+<tr><td class="cn">14</td><td><span class="fn">items.item_revenue</span></td><td><span class="badge b-flt">FLOAT</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">商品収益（ローカル通貨）※purchaseのみ</span></td></tr>
+<tr><td class="cn">15</td><td><span class="fn">items.item_refund_in_usd</span></td><td><span class="badge b-flt">FLOAT</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">商品返金額（USD）※refundのみ</span></td></tr>
+<tr><td class="cn">16</td><td><span class="fn">items.item_refund</span></td><td><span class="badge b-flt">FLOAT</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">商品返金額（ローカル通貨）※refundのみ</span></td></tr>
+<tr><td class="cn">17</td><td><span class="fn">items.coupon</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">クーポンコード</span></td></tr>
+<tr><td class="cn">18</td><td><span class="fn">items.affiliation</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">商品アフィリエーション（供給元）</span></td></tr>
+<tr><td class="cn">19</td><td><span class="fn">items.location_id</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">商品に紐づくロケーションID</span></td></tr>
+<tr><td class="cn">20</td><td><span class="fn">items.item_list_id</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">商品リストID</span></td></tr>
+<tr><td class="cn">21</td><td><span class="fn">items.item_list_name</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">商品リスト名</span></td></tr>
+<tr><td class="cn">22</td><td><span class="fn">items.item_list_index</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">リスト内の位置</span></td></tr>
+<tr><td class="cn">23</td><td><span class="fn">items.promotion_id</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">プロモーションID</span></td></tr>
+<tr><td class="cn">24</td><td><span class="fn">items.promotion_name</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">プロモーション名</span></td></tr>
+<tr><td class="cn">25</td><td><span class="fn">items.creative_name</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">クリエイティブ名</span></td></tr>
+<tr><td class="cn">26</td><td><span class="fn">items.creative_slot</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">クリエイティブスロット</span></td></tr>
+</tbody></table></div>
+
+<!-- ==================== stream / platform / other ==================== -->
+<div class="tw" id="sec-other">
+<div class="section-head">stream / platform / app_info — その他</div>
+<table><thead><tr><th class="cn">#</th><th style="width:30%">フィールド名</th><th style="width:10%">型</th><th style="width:7%">構造</th><th>説明</th></tr></thead>
+<tbody>
+<tr><td class="cn">1</td><td><span class="fn">stream_id</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">データストリームID</span></td></tr>
+<tr><td class="cn">2</td><td><span class="fn">platform</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">プラットフォーム（Web / IOS / Android）</span></td></tr>
+<tr><td class="cn">3</td><td><span class="fn">app_info.id</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">アプリのパッケージ名 / バンドルID</span></td></tr>
+<tr><td class="cn">4</td><td><span class="fn">app_info.firebase_app_id</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">Firebase App ID</span></td></tr>
+<tr><td class="cn">5</td><td><span class="fn">app_info.install_source</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">インストール元ストア</span></td></tr>
+<tr><td class="cn">6</td><td><span class="fn">app_info.version</span></td><td><span class="badge b-str">STRING</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">アプリバージョン</span></td></tr>
+</tbody></table></div>
+
+<!-- ==================== 共通注記 ==================== -->
+<div class="note-box" style="margin:0 0 2rem;">
+  <strong>STAGING層での利用方針：</strong><br>
+  ・今回の設計では <code>page_view</code> イベントのみSTAGING層に取り込む方針。<br>
+  ・<code>event_params</code> から <code>page_location</code>, <code>page_title</code>, <code>ga_session_id</code>, <code>ga_session_number</code> 等を <code>UNNEST</code> で展開してフラット化する。<br>
+  ・<code>user_id</code>（ログイン済み会員ID）と <code>user_pseudo_id</code>（client_id相当）をINTEGRATION層のGA4 ID対照表で紐付ける。<br>
+  ・遅延データ対応：日次テーブルは最大3日後まで更新されるため、STAGING層ではD-3までのデータを対象にして重複排除する。<br>
+  ・<code>session_traffic_source_last_click</code> は広告分析が必要になった場合にSTAGING取り込みを検討。<br>
+  ・<code>publisher</code> RECORDはAdMob用のためスコープ外。
+</div>
+
+</div>
+
+<script>
+document.querySelectorAll('.er').forEach(r=>{r.addEventListener('click',()=>{const t=r.dataset.target,x=r.classList.toggle('expanded');document.querySelectorAll(`.cr[data-parent="${t}"]`).forEach(c=>c.classList.toggle('v',x))})});
+</script>
+</body>
+</html>
