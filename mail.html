@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Synergy! メールAPI RAW層 テーブル定義</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fafafa;--surface:#fff;--border:#e2e8f0;--border-light:#f1f5f9;--text:#1e293b;--text-s:#64748b;--text-m:#94a3b8;--accent:#2563eb;--rec-bg:#fefce8;--rec-t:#854d0e;--list-bg:#f0fdf4;--list-t:#166534;--sc-bg:#f8fafc;--sc-t:#475569;--req-bg:#fef2f2;--req-t:#dc2626;--nul-bg:#f0f9ff;--nul-t:#0369a1;--rep-bg:#faf5ff;--rep-t:#7c3aed;--csv-bg:#fff7ed;--csv-t:#c2410c;--pipe-bg:#ecfdf5;--pipe-t:#065f46;--sh:0 1px 3px rgba(0,0,0,.06);--shm:0 4px 6px rgba(0,0,0,.05)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;padding:2rem}
+.container{max-width:1440px;margin:0 auto}
+h1{font-size:1.5rem;font-weight:700;margin-bottom:.25rem}
+.subtitle{font-size:.85rem;color:var(--text-s);margin-bottom:2rem}
+.subtitle a{color:var(--accent);text-decoration:none}
+.subtitle a:hover{text-decoration:underline}
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.8rem;margin-bottom:1.5rem}
+.mc{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.8rem 1rem;box-shadow:var(--sh)}
+.mc dt{font-size:.65rem;font-weight:500;text-transform:uppercase;letter-spacing:.05em;color:var(--text-m);margin-bottom:.15rem}
+.mc dd{font-size:.82rem;font-weight:500;font-family:'JetBrains Mono',monospace}
+.legend{display:flex;flex-wrap:wrap;gap:.6rem;margin-bottom:1.2rem;font-size:.72rem}
+.legend-item{display:inline-flex;align-items:center;gap:.3rem}
+.badge{display:inline-block;padding:.08rem .4rem;border-radius:4px;font-size:.62rem;font-weight:500;font-family:'JetBrains Mono',monospace;white-space:nowrap}
+.b-req{background:var(--req-bg);color:var(--req-t)}.b-nul{background:var(--nul-bg);color:var(--nul-t)}.b-rep{background:var(--rep-bg);color:var(--rep-t)}
+.sb{display:inline-block;padding:.08rem .4rem;border-radius:4px;font-size:.62rem;font-weight:500;font-family:'JetBrains Mono',monospace}
+.s-sc{background:var(--sc-bg);color:var(--sc-t)}.s-rec{background:var(--rec-bg);color:var(--rec-t)}.s-list{background:var(--list-bg);color:var(--list-t)}
+.tw{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow-x:auto;box-shadow:var(--shm);margin-bottom:2.5rem}
+.tt{padding:.9rem 1.2rem;font-size:1rem;font-weight:700;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.5rem}
+.tt code{font-family:'JetBrains Mono',monospace;font-size:.92rem;color:var(--accent)}
+.td{padding:.4rem 1.2rem .6rem;font-size:.75rem;color:var(--text-s);border-bottom:1px solid var(--border-light)}
+.td a{color:var(--accent);text-decoration:none}
+table{width:100%;border-collapse:collapse;font-size:.78rem}
+thead th{background:#f8fafc;padding:.5rem .7rem;text-align:left;font-weight:600;font-size:.65rem;text-transform:uppercase;letter-spacing:.04em;color:var(--text-s);border-bottom:2px solid var(--border);position:sticky;top:0;z-index:10;white-space:nowrap}
+tbody tr{border-bottom:1px solid var(--border-light)}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:#fafbfd}
+td{padding:.45rem .7rem;vertical-align:top}
+.cn{width:2.8rem;color:var(--text-m);font-family:'JetBrains Mono',monospace;font-size:.68rem}
+.ca{width:18%}.cb{width:15%}.ct{width:7%}.cm{width:7%}.cs{width:7%}
+.csv-name{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--csv-t);background:var(--csv-bg);padding:.04rem .25rem;border-radius:3px}
+.csv-name.na{opacity:.35;background:transparent}
+.pipe-name{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--pipe-t);background:var(--pipe-bg);padding:.04rem .25rem;border-radius:3px}
+.fn{font-family:'JetBrains Mono',monospace;font-weight:500;font-size:.75rem}
+.bt{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-s)}
+.dt{font-size:.75rem;color:var(--text-s);line-height:1.45}
+.dt a{color:var(--accent);text-decoration:none;font-size:.68rem}
+.dt a:hover{text-decoration:underline}
+.dt code{font-family:'JetBrains Mono',monospace;font-size:.7rem;background:#f1f5f9;padding:.05rem .25rem;border-radius:3px}
+.note-box{margin:1rem 1.2rem 1.5rem;padding:.8rem 1rem;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;font-size:.78rem;color:#92400e;line-height:1.6}
+.note-box strong{font-weight:600}
+.error-codes{margin:.3rem 0;display:flex;flex-wrap:wrap;gap:.3rem}
+.error-code{font-family:'JetBrains Mono',monospace;font-size:.65rem;background:#fef2f2;color:#991b1b;padding:.1rem .35rem;border-radius:3px}
+.toc{margin-bottom:2rem;padding:1rem 1.5rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;box-shadow:var(--sh)}
+.toc h2{font-size:.85rem;font-weight:600;margin-bottom:.5rem;color:var(--text-s)}
+.toc ul{list-style:none;display:flex;flex-wrap:wrap;gap:.5rem 1.5rem}
+.toc a{font-size:.82rem;color:var(--accent);text-decoration:none;font-family:'JetBrains Mono',monospace}
+.toc a:hover{text-decoration:underline}
+@media(max-width:900px){body{padding:1rem}.meta{grid-template-columns:1fr}td,th{padding:.3rem .4rem;font-size:.72rem}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>Synergy! メールAPI RAW層 テーブル定義</h1>
+<p class="subtitle">
+  ソース: <a href="https://docs.synergy-marketing.co.jp/mailapi-reference/api-reference" target="_blank">Synergy! メールAPI リファレンス</a>
+</p>
+
+<nav class="toc">
+<h2>目次</h2>
+<ul>
+<li><a href="#tbl-deliveries">raw_synergy_email_deliveries</a></li>
+<li><a href="#tbl-results">raw_synergy_email_results</a></li>
+<li><a href="#tbl-opens">raw_synergy_email_opens</a></li>
+<li><a href="#tbl-clicks">raw_synergy_email_clicks</a></li>
+<li><a href="#tbl-errors">raw_synergy_email_errors</a></li>
+<li><a href="#tbl-unsubscribes">raw_synergy_email_unsubscribes</a></li>
+</ul>
+</nav>
+
+<div class="legend">
+<span class="legend-item"><span class="badge b-req">REQUIRED</span> 必須</span>
+<span class="legend-item"><span class="badge b-nul">NULLABLE</span> NULL許容</span>
+<span class="legend-item"><span class="sb s-sc">スカラー</span> 単一値</span>
+<span class="legend-item"><span class="csv-name">日本語</span> CSV列名</span>
+<span class="legend-item"><span class="pipe-name">パイプライン付与</span> API外で付与</span>
+</div>
+
+<!-- ============================================================ -->
+<!-- raw_synergy_email_deliveries -->
+<!-- ============================================================ -->
+<div class="tw" id="tbl-deliveries">
+<div class="tt"><code>raw_synergy_email_deliveries</code></div>
+<div class="td">
+  ソース: 配信状態取得API <code>GET /deliveries/{配信ID}</code> + 配信実行時のリクエストパラメータ<br>
+  1配信1行　｜　パーティション: loaded_date　｜　重複排除キー: delivery_task_id
+</div>
+<table>
+<thead><tr><th class="cn">#</th><th class="ca">API名</th><th class="cb">BQ名</th><th class="ct">BQ型</th><th class="cm">モード</th><th class="cs">構造</th><th>説明</th></tr></thead>
+<tbody>
+<tr><td class="cn">1</td><td><span class="csv-name">deliveryTaskId</span></td><td><span class="fn">delivery_task_id</span></td><td><span class="bt">INT64</span></td><td><span class="badge b-req">REQUIRED</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">配信ID（全テーブルの結合キー）</span></td></tr>
+<tr><td class="cn">2</td><td><span class="csv-name">status</span></td><td><span class="fn">status</span></td><td><span class="bt">STRING</span></td><td><span class="badge b-req">REQUIRED</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">配信状態（SENDING / COMPLETED / RESERVED / ERROR）</span></td></tr>
+<tr><td class="cn">3</td><td><span class="csv-name">total</span></td><td><span class="fn">total</span></td><td><span class="bt">INT64</span></td><td><span class="badge b-req">REQUIRED</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">配信総数</span></td></tr>
+<tr><td class="cn">4</td><td><span class="csv-name">sent</span></td><td><span class="fn">sent</span></td><td><span class="bt">INT64</span></td><td><span class="badge b-req">REQUIRED</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">配信完了数</span></td></tr>
+<tr><td class="cn">5</td><td><span class="pipe-name">配信設定時 fromAddress</span></td><td><span class="fn">from_address</span></td><td><span class="bt">STRING</span></td><td><span class="badge b-req">REQUIRED</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">差出人アドレス ※配信実行時のリクエストから保存</span></td></tr>
+<tr><td class="cn">6</td><td><span class="pipe-name">配信設定時 fromName</span></td><td><span class="fn">from_name</span></td><td><span class="bt">STRING</span></td><td><span class="badge b-nul">NULLABLE</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">差出人名</span></td></tr>
+<tr><td class="cn">7</td><td><span class="pipe-name">配信設定時 replyAddress</span></td><td><span class="fn">reply_address</span></td><td><span class="bt">STRING</span></td><td><span class="badge b-nul">NULLABLE</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">返信先アドレス</span></td></tr>
+<tr><td class="cn">8</td><td><span class="pipe-name">配信設定時 subject</span></td><td><span class="fn">subject</span></td><td><span class="bt">STRING</span></td><td><span class="badge b-req">REQUIRED</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">メール件名</span></td></tr>
+<tr><td class="cn">9</td><td><span class="pipe-name">配信設定時 encode</span></td><td><span class="fn">encode</span></td><td><span class="bt">STRING</span></td><td><span class="badge b-nul">NULLABLE</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">エンコーディング（UTF-8 / ISO-2022-JP）</span></td></tr>
+<tr><td class="cn">10</td><td><span class="pipe-name">配信設定時 test</span></td><td><span class="fn">test</span></td><td><span class="bt">BOOLEAN</span></td><td><span class="badge b-req">REQUIRED</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">テスト配信フラグ</span></td></tr>
+<tr><td class="cn">11</td><td><span class="pipe-name">取込時付与</span></td><td><span class="fn">loaded_date</span></td><td><span class="bt">DATE</span></td><td><span class="badge b-req">REQUIRED</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">取込日（パーティションキー）</span></td></tr>
+</tbody>
+</table>
+<div class="note-box">
+  <strong>注意：</strong> #5〜#10 は配信状態取得APIのレスポンスには含まれません。配信実行時（POST /deliveries）のリクエストパラメータを取込パイプラインで同時に保存する設計です。
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- raw_synergy_email_results -->
+<!-- ============================================================ -->
+<div class="tw" id="tbl-results">
+<div class="tt"><code>raw_synergy_email_results</code></div>
+<div class="td">
+  ソース: 配信結果取得API <code>GET /deliveries/{配信ID}/results</code> → CSVレスポンス<br>
+  1配信成功宛先1行　｜　パーティション: loaded_date　｜　重複排除キー: delivery_task_id + synergy_id
+</div>
+<table>
+<thead><tr><th class="cn">#</th><th class="ca">CSV列名</th><th class="cb">BQ名</th><th class="ct">BQ型</th><th class="cm">モード</th><th class="cs">構造</th><th>説明</th></tr></thead>
+<tbody>
+<tr><td class="cn">1</td><td><span class="pipe-name">APIパスから付与</span></td><td><span class="fn">delivery_task_id</span></td><td><span class="bt">INT64</span></td><td><span class="badge b-req">REQUIRED</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">配信ID</span></td></tr>
+<tr><td class="cn">2</td><td><span class="csv-name">Synergy!ID</span></td><td><span class="fn">synergy_id</span></td><td><span class="bt">INT64</span></td><td><span class="badge b-req">REQUIRED</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">Synergy! 顧客ID（配信時に付与した Customer.synergyid）</span></td></tr>
+<tr><td class="cn">3</td><td><span class="csv-name">配信日時</span></td><td><span class="fn">delivered_at</span></td><td><span class="bt">TIMESTAMP</span></td><td><span class="badge b-req">REQUIRED</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">配信完了日時（例：2020-04-28 16:20:09）</span></td></tr>
+<tr><td class="cn">4</td><td><span class="pipe-name">取込時付与</span></td><td><span class="fn">loaded_date</span></td><td><span class="bt">DATE</span></td><td><span class="badge b-req">REQUIRED</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">取込日（パーティションキー）</span></td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- ============================================================ -->
+<!-- raw_synergy_email_opens -->
+<!-- ============================================================ -->
+<div class="tw" id="tbl-opens">
+<div class="tt"><code>raw_synergy_email_opens</code></div>
+<div class="td">
+  ソース: 開封確認結果取得API <code>GET /deliveries/{配信ID}/opens</code> → CSVレスポンス<br>
+  1開封イベント1行（同一ユーザーが複数回開封する場合あり）　｜　パーティション: loaded_date　｜　重複排除キー: delivery_task_id + synergy_id + opened_at
+</div>
+<table>
+<thead><tr><th class="cn">#</th><th class="ca">CSV列名</th><th class="cb">BQ名</th><th class="ct">BQ型</th><th class="cm">モード</th><th class="cs">構造</th><th>説明</th></tr></thead>
+<tbody>
+<tr><td class="cn">1</td><td><span class="pipe-name">APIパスから付与</span></td><td><span class="fn">delivery_task_id</span></td><td><span class="bt">INT64</span></td><td><span class="badge b-req">REQUIRED</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">配信ID</span></td></tr>
+<tr><td class="cn">2</td><td><span class="csv-name">Synergy!ID</span></td><td><span class="fn">synergy_id</span></td><td><span class="bt">INT64</span></td><td><span class="badge b-req">REQUIRED</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">Synergy! 顧客ID</span></td></tr>
+<tr><td class="cn">3</td><td><span class="csv-name">開封日時</span></td><td><span class="fn">opened_at</span></td><td><span class="bt">TIMESTAMP</span></td><td><span class="badge b-req">REQUIRED</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">開封日時（例：2016-09-12 08:21:38）</span></td></tr>
+<tr><td class="cn">4</td><td><span class="pipe-name">取込時付与</span></td><td><span class="fn">loaded_date</span></td><td><span class="bt">DATE</span></td><td><span class="badge b-req">REQUIRED</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">取込日（パーティションキー）</span></td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- ============================================================ -->
+<!-- raw_synergy_email_clicks -->
+<!-- ============================================================ -->
+<div class="tw" id="tbl-clicks">
+<div class="tt"><code>raw_synergy_email_clicks</code></div>
+<div class="td">
+  ソース: クリックフィードバック結果取得API <code>GET /deliveries/{配信ID}/clicks</code> → CSVレスポンス<br>
+  1クリックイベント1行　｜　パーティション: loaded_date　｜　重複排除キー: delivery_task_id + synergy_id + clicked_at + click_feedback_id
+</div>
+<table>
+<thead><tr><th class="cn">#</th><th class="ca">CSV列名</th><th class="cb">BQ名</th><th class="ct">BQ型</th><th class="cm">モード</th><th class="cs">構造</th><th>説明</th></tr></thead>
+<tbody>
+<tr><td class="cn">1</td><td><span class="pipe-name">APIパスから付与</span></td><td><span class="fn">delivery_task_id</span></td><td><span class="bt">INT64</span></td><td><span class="badge b-req">REQUIRED</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">配信ID</span></td></tr>
+<tr><td class="cn">2</td><td><span class="csv-name">Synergy!ID</span></td><td><span class="fn">synergy_id</span></td><td><span class="bt">INT64</span></td><td><span class="badge b-req">REQUIRED</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">Synergy! 顧客ID</span></td></tr>
+<tr><td class="cn">3</td><td><span class="csv-name">クリック日時</span></td><td><span class="fn">clicked_at</span></td><td><span class="bt">TIMESTAMP</span></td><td><span class="badge b-req">REQUIRED</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">クリック日時</span></td></tr>
+<tr><td class="cn">4</td><td><span class="csv-name">クリックID</span></td><td><span class="fn">click_feedback_id</span></td><td><span class="bt">INT64</span></td><td><span class="badge b-req">REQUIRED</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">クリックフィードバックID（配信レスポンスのtextClickFeedbacks/htmlClickFeedbacksのidに対応）</span></td></tr>
+<tr><td class="cn">5</td><td><span class="csv-name">クリックURL</span></td><td><span class="fn">click_url</span></td><td><span class="bt">STRING</span></td><td><span class="badge b-req">REQUIRED</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">クリックされたURL</span></td></tr>
+<tr><td class="cn">6</td><td><span class="pipe-name">取込時付与</span></td><td><span class="fn">loaded_date</span></td><td><span class="bt">DATE</span></td><td><span class="badge b-req">REQUIRED</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">取込日（パーティションキー）</span></td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- ============================================================ -->
+<!-- raw_synergy_email_errors -->
+<!-- ============================================================ -->
+<div class="tw" id="tbl-errors">
+<div class="tt"><code>raw_synergy_email_errors</code></div>
+<div class="td">
+  ソース: 配信エラー結果取得API <code>GET /deliveries/{配信ID}/errors</code> → CSVレスポンス<br>
+  1エラーイベント1行　｜　パーティション: loaded_date　｜　重複排除キー: delivery_task_id + synergy_id
+</div>
+<table>
+<thead><tr><th class="cn">#</th><th class="ca">CSV列名</th><th class="cb">BQ名</th><th class="ct">BQ型</th><th class="cm">モード</th><th class="cs">構造</th><th>説明</th></tr></thead>
+<tbody>
+<tr><td class="cn">1</td><td><span class="pipe-name">APIパスから付与</span></td><td><span class="fn">delivery_task_id</span></td><td><span class="bt">INT64</span></td><td><span class="badge b-req">REQUIRED</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">配信ID</span></td></tr>
+<tr><td class="cn">2</td><td><span class="csv-name">Synergy!ID</span></td><td><span class="fn">synergy_id</span></td><td><span class="bt">INT64</span></td><td><span class="badge b-req">REQUIRED</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">Synergy! 顧客ID</span></td></tr>
+<tr><td class="cn">3</td><td><span class="csv-name">配信エラー日時</span></td><td><span class="fn">error_at</span></td><td><span class="bt">TIMESTAMP</span></td><td><span class="badge b-req">REQUIRED</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">エラー発生日時</span></td></tr>
+<tr><td class="cn">4</td><td><span class="csv-name">配信エラー理由</span></td><td><span class="fn">error_reason</span></td><td><span class="bt">STRING</span></td><td><span class="badge b-req">REQUIRED</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">エラーコード（下記参照）</span></td></tr>
+<tr><td class="cn">5</td><td><span class="pipe-name">取込時付与</span></td><td><span class="fn">loaded_date</span></td><td><span class="bt">DATE</span></td><td><span class="badge b-req">REQUIRED</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">取込日（パーティションキー）</span></td></tr>
+</tbody>
+</table>
+<div class="note-box">
+  <strong>配信エラー理由一覧（error_reason の値）：</strong><br>
+  <div class="error-codes">
+    <span class="error-code">UNKNOWN_USER</span> 宛先不明
+    <span class="error-code">UNKNOWN_HOST</span> ドメイン不明
+    <span class="error-code">MAILBOX_FULL</span> メールボックス満杯
+    <span class="error-code">REJECTED</span> 受信拒否
+    <span class="error-code">SPAM</span> SPAM判定
+    <span class="error-code">INVALID_ADDRESS</span> アドレス書式エラー
+    <span class="error-code">SYSTEM</span> 配信リストクリーニングによる除外
+    <span class="error-code">OTHER</span> その他
+  </div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- raw_synergy_email_unsubscribes -->
+<!-- ============================================================ -->
+<div class="tw" id="tbl-unsubscribes">
+<div class="tt"><code>raw_synergy_email_unsubscribes</code></div>
+<div class="td">
+  ソース: 配信解除依頼リスト取得API <code>GET /deliveries/{配信ID}/unsubscribes</code> → CSVレスポンス<br>
+  1解除依頼1行　｜　パーティション: loaded_date　｜　重複排除キー: delivery_task_id + synergy_id
+</div>
+<table>
+<thead><tr><th class="cn">#</th><th class="ca">CSV列名</th><th class="cb">BQ名</th><th class="ct">BQ型</th><th class="cm">モード</th><th class="cs">構造</th><th>説明</th></tr></thead>
+<tbody>
+<tr><td class="cn">1</td><td><span class="pipe-name">APIパスから付与</span></td><td><span class="fn">delivery_task_id</span></td><td><span class="bt">INT64</span></td><td><span class="badge b-req">REQUIRED</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">配信ID</span></td></tr>
+<tr><td class="cn">2</td><td><span class="csv-name">Synergy!ID</span></td><td><span class="fn">synergy_id</span></td><td><span class="bt">INT64</span></td><td><span class="badge b-req">REQUIRED</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">Synergy! 顧客ID</span></td></tr>
+<tr><td class="cn">3</td><td><span class="csv-name">配信解除依頼日時</span></td><td><span class="fn">unsubscribed_at</span></td><td><span class="bt">TIMESTAMP</span></td><td><span class="badge b-req">REQUIRED</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">配信解除依頼日時</span></td></tr>
+<tr><td class="cn">4</td><td><span class="pipe-name">取込時付与</span></td><td><span class="fn">loaded_date</span></td><td><span class="bt">DATE</span></td><td><span class="badge b-req">REQUIRED</span></td><td><span class="sb s-sc">スカラー</span></td><td><span class="dt">取込日（パーティションキー）</span></td></tr>
+</tbody>
+</table>
+<div class="note-box">
+  <strong>運用上の注意：</strong> 配信解除依頼があった顧客は次回以降の配信先リストから除外する必要があります。STAGING層で配信解除フラグを管理し、配信対象からの除外ロジックを実装してください。
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 共通注記 -->
+<!-- ============================================================ -->
+<div class="note-box" style="margin:0 0 2rem;">
+  <strong>共通ルール：</strong><br>
+  ・<code>delivery_task_id</code> はCSVのカラムではなく、APIのURLパス <code>/deliveries/{配信ID}/opens</code> 等から取得してパイプラインで付与します。<br>
+  ・各APIはクエリパラメータ <code>start</code> / <code>end</code>（ISO 8601形式）で取得期間を指定可能。日次バッチでは前日分を期間指定して取得します。<br>
+  ・全配信エラー結果取得API（<code>/errors/all</code>）と全配信解除依頼リスト取得API（<code>/unsubscribes/all</code>）は取得可能期間が6ヶ月前の1日以降に制限されます。<br>
+  ・CSVレスポンスの整合性は <code>Content-MD5</code> レスポンスヘッダで検証してください。<br>
+  ・RAW層の保持期間: 13ヶ月（レイヤー設計書に準拠）
+</div>
+
+</div>
+</body>
+</html>
