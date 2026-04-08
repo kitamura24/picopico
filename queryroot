@@ -1,0 +1,288 @@
+# Shopify GraphQL QueryRoot フィールド選定リスト
+
+**参照：** https://shopify.dev/docs/api/admin-graphql/latest/objects/queryroot  
+**APIバージョン：** 2026-01  
+**判断基準：** データ統合基盤 要件・対応方針（A-1〜D-3）
+
+---
+
+## 凡例
+
+- **○ 対象** ：取得対象とする
+- **× 対象外**：取得対象としない
+- **－ 対象外（単件取得用）**：Connectionでない単件取得クエリのため、バッチ取得には使わない
+
+---
+
+| # | フィールド名 | カテゴリ | 判定 | 理由 |
+|---|---|---|---|---|
+| 1 | abandonedCheckouts | カゴ落ち | × | 要件にカゴ落ち分析の記載なし。GA4でカート追加イベントは取得するため不要 |
+| 2 | abandonedCheckoutsCount | カゴ落ち | × | 同上 |
+| 3 | abandonment | カゴ落ち | × | 同上 |
+| 4 | abandonmentByAbandonedCheckoutId | カゴ落ち | × | 同上 |
+| 5 | app | アプリ | × | アプリ管理用。分析データではない |
+| 6 | appByHandle | アプリ | × | 同上 |
+| 7 | appByKey | アプリ | × | 同上 |
+| 8 | appDiscountType | アプリ | × | アプリ開発者向け。分析データではない |
+| 9 | appDiscountTypes | アプリ | × | 同上 |
+| 10 | appDiscountTypesNodes | アプリ | × | 同上 |
+| 11 | appInstallation | アプリ | × | アプリ管理用。分析データではない |
+| 12 | appInstallations | アプリ | × | 同上 |
+| 13 | article | コンテンツ | × | ブログ記事の管理用。分析データではない |
+| 14 | articleAuthors | コンテンツ | × | 同上 |
+| 15 | articles | コンテンツ | × | 同上 |
+| 16 | articleTags | コンテンツ | × | 同上 |
+| 17 | assignedFulfillmentOrders | フルフィルメント | × | 配送管理用。要件に配送分析の記載なし |
+| 18 | automaticDiscountNode | 割引 | × | 割引設定の管理用。注文に含まれる割引情報はOrderから取得するため不要 |
+| 19 | automaticDiscountSavedSearches | 割引 | × | 同上 |
+| 20 | availableBackupRegions | ショップ設定 | × | ショップ設定情報。分析データではない |
+| 21 | availableCarrierServices | 配送 | × | 配送業者設定。分析データではない |
+| 22 | availableLocales | ショップ設定 | × | 言語設定。分析データではない |
+| 23 | backupRegion | ショップ設定 | × | ショップ設定情報。分析データではない |
+| 24 | blog | コンテンツ | × | ブログ管理用。分析データではない |
+| 25 | blogs | コンテンツ | × | 同上 |
+| 26 | blogsCount | コンテンツ | × | 同上 |
+| 27 | bulkOperation | バルク操作 | × | バルク操作の管理用クエリ。取込データではない |
+| 28 | bulkOperations | バルク操作 | × | 同上 |
+| 29 | businessEntities | B2B | × | B2B（法人）向け機能。今回はB2C用途のため対象外 |
+| 30 | businessEntity | B2B | × | 同上 |
+| 31 | carrierService | 配送 | × | 配送業者設定。分析データではない |
+| 32 | carrierServices | 配送 | × | 同上 |
+| 33 | cartTransforms | カート | × | カスタム価格計算用のアプリ機能。分析データではない |
+| 34 | cashTrackingSession | POS | × | 実店舗POS用。今回のEC分析には対象外 |
+| 35 | cashTrackingSessions | POS | × | 同上 |
+| 36 | catalog | カタログ | × | B2B向けカタログ機能。今回対象外 |
+| 37 | catalogOperations | カタログ | × | 同上 |
+| 38 | catalogs | カタログ | × | 同上 |
+| 39 | catalogsCount | カタログ | × | 同上 |
+| 40 | channel | 販売チャネル | × | 販売チャネル設定。分析データではない |
+| 41 | channels | 販売チャネル | × | 同上 |
+| 42 | checkoutBranding | チェックアウト | × | チェックアウト画面のデザイン設定。分析データではない |
+| 43 | checkoutProfile | チェックアウト | × | 同上 |
+| 44 | checkoutProfiles | チェックアウト | × | 同上 |
+| 45 | codeDiscountNode | 割引 | × | 割引コード設定の管理用。注文に含まれる割引情報はOrderから取得するため不要 |
+| 46 | codeDiscountNodeByCode | 割引 | × | 同上 |
+| 47 | codeDiscountSavedSearches | 割引 | × | 同上 |
+| 48 | collection | コレクション | × | 商品コレクション1件取得用。バッチ取得には使わない |
+| 49 | collectionByIdentifier | コレクション | × | 同上 |
+| 50 | collectionRulesConditions | コレクション | × | コレクション設定用。分析データではない |
+| 51 | collections | コレクション | × | 商品カテゴリ分類用。今回の要件（商品マスタ統合）はSKU/JANコードで行うため不要。必要と判断された場合は再検討 |
+| 52 | collectionSavedSearches | コレクション | × | 管理用。分析データではない |
+| 53 | collectionsCount | コレクション | × | 同上 |
+| 54 | comment | コンテンツ | × | ブログコメント管理用。分析データではない |
+| 55 | comments | コンテンツ | × | 同上 |
+| 56 | companies | B2B | × | B2B法人顧客管理。今回はB2C用途のため対象外 |
+| 57 | companiesCount | B2B | × | 同上 |
+| 58 | company | B2B | × | 同上 |
+| 59 | companyContact | B2B | × | 同上 |
+| 60 | companyContactRole | B2B | × | 同上 |
+| 61 | companyLocation | B2B | × | 同上 |
+| 62 | companyLocations | B2B | × | 同上 |
+| 63 | consentPolicy | プライバシー | × | 同意ポリシー設定。分析データではない |
+| 64 | consentPolicyRegions | プライバシー | × | 同上 |
+| 65 | currentAppInstallation | アプリ | × | 現在のアプリ設定。分析データではない |
+| 66 | currentStaffMember | スタッフ | × | 認証中スタッフ情報。分析データではない |
+| 67 | customer | 顧客 | － | 単件取得用。一覧はcustomersを使う |
+| 68 | customerAccountPage | 顧客 | × | 顧客アカウントページ設定。分析データではない |
+| 69 | customerAccountPages | 顧客 | × | 同上 |
+| 70 | customerByIdentifier | 顧客 | － | 単件取得用。一覧はcustomersを使う |
+| 71 | customerMergeJobStatus | 顧客 | × | 顧客マージ処理の管理用。分析データではない |
+| 72 | customerMergePreview | 顧客 | × | 同上 |
+| 73 | customerPaymentMethod | 顧客 | × | 顧客の決済手段。要件に決済手段分析の記載なし |
+| 74 | customers | 顧客 | **○** | A-1：顧客データ取得対象。顧客属性・マーケティング同意状態・累計購入金額等を取得 |
+| 75 | customerSavedSearches | 顧客 | × | 管理用保存検索。分析データではない |
+| 76 | customersCount | 顧客 | × | 管理用カウント。分析データではない |
+| 77 | customerSegmentMembers | セグメント | × | Shopifyのセグメント機能。BigQuery側で独自にセグメントを作るため不要（C-1） |
+| 78 | customerSegmentMembership | セグメント | × | 同上 |
+| 79 | customerSegmentMembersQuery | セグメント | × | 同上 |
+| 80 | deliveryCustomization | 配送 | × | 配送カスタマイズ設定。分析データではない |
+| 81 | deliveryCustomizations | 配送 | × | 同上 |
+| 82 | deliveryProfile | 配送 | × | 配送プロファイル設定。分析データではない |
+| 83 | deliveryProfiles | 配送 | × | 同上 |
+| 84 | deliveryPromiseParticipants | 配送 | × | 配送予定管理。分析データではない |
+| 85 | deliveryPromiseProvider | 配送 | × | 同上 |
+| 86 | deliveryPromiseSettings | 配送 | × | 同上 |
+| 87 | deliverySettings | 配送 | × | 配送設定。分析データではない |
+| 88 | discountCodesCount | 割引 | × | 管理用カウント。分析データではない |
+| 89 | discountNode | 割引 | × | 割引設定管理用。注文に含まれる割引情報はOrderから取得するため不要 |
+| 90 | discountNodes | 割引 | × | 同上 |
+| 91 | discountNodesCount | 割引 | × | 同上 |
+| 92 | discountRedeemCodeBulkCreation | 割引 | × | 割引コード一括作成用。分析データではない |
+| 93 | discountRedeemCodeSavedSearches | 割引 | × | 管理用。分析データではない |
+| 94 | dispute | 決済 | × | Shopify Paymentsの支払い異議申し立て。要件に記載なし |
+| 95 | disputeEvidence | 決済 | × | 同上 |
+| 96 | disputes | 決済 | × | 同上 |
+| 97 | domain | ショップ設定 | × | ドメイン設定。分析データではない |
+| 98 | draftOrder | 注文 | × | 下書き注文1件取得用。下書き注文は確定前のデータであり分析対象外 |
+| 99 | draftOrderAvailableDeliveryOptions | 注文 | × | 同上 |
+| 100 | draftOrders | 注文 | × | 下書き注文一覧。確定前データのため分析対象外 |
+| 101 | draftOrderSavedSearches | 注文 | × | 管理用。分析データではない |
+| 102 | draftOrdersCount | 注文 | × | 同上 |
+| 103 | draftOrderTag | 注文 | × | 同上 |
+| 104 | event | イベントログ | × | ストア操作ログ1件取得用。分析対象外 |
+| 105 | events | イベントログ | × | ストア操作ログ一覧（誰がいつ何を操作したか）。要件に記載なし |
+| 106 | eventsCount | イベントログ | × | 同上 |
+| 107 | files | ファイル | × | ショップ内ファイル管理。分析データではない |
+| 108 | fileSavedSearches | ファイル | × | 同上 |
+| 109 | financeAppAccessPolicy | 決済 | × | 財務アプリのアクセス設定。分析データではない |
+| 110 | financeKycInformation | 決済 | × | 本人確認情報。分析データではない |
+| 111 | fulfillment | フルフィルメント | × | 配送処理1件取得用。要件に配送詳細分析の記載なし |
+| 112 | fulfillmentConstraintRules | フルフィルメント | × | 配送ルール設定。分析データではない |
+| 113 | fulfillmentOrder | フルフィルメント | × | フルフィルメント注文1件取得用。配送詳細分析は要件外 |
+| 114 | fulfillmentOrders | フルフィルメント | × | フルフィルメント注文一覧。同上 |
+| 115 | fulfillmentService | フルフィルメント | × | 配送サービス設定。分析データではない |
+| 116 | giftCard | ギフトカード | × | ギフトカード1件取得用。要件に記載なし |
+| 117 | giftCardConfiguration | ギフトカード | × | ギフトカード設定。分析データではない |
+| 118 | giftCards | ギフトカード | × | ギフトカード一覧。要件に記載なし |
+| 119 | giftCardsCount | ギフトカード | × | 同上 |
+| 120 | inventoryItem | 在庫 | × | 在庫アイテム1件取得用。単件のため不要 |
+| 121 | inventoryItems | 在庫 | × | 在庫アイテム一覧。現在の在庫数はProductVariantから取得するため不要 |
+| 122 | inventoryLevel | 在庫 | × | 拠点別在庫数。要件に拠点別在庫分析の記載なし |
+| 123 | inventoryProperties | 在庫 | × | 在庫設定。分析データではない |
+| 124 | inventoryShipment | 在庫 | × | 在庫出荷管理。分析データではない |
+| 125 | inventoryTransfer | 在庫 | × | 在庫転送1件取得用。分析データではない |
+| 126 | inventoryTransfers | 在庫 | × | 在庫転送一覧。分析データではない |
+| 127 | job | ジョブ | × | 非同期ジョブ管理用。分析データではない |
+| 128 | location | 拠点 | × | 倉庫・店舗1件取得用。分析データではない |
+| 129 | locationByIdentifier | 拠点 | × | 同上 |
+| 130 | locations | 拠点 | × | 拠点一覧。要件に拠点別分析の記載なし |
+| 131 | locationsAvailableForDeliveryProfilesConnection | 拠点 | × | 配送設定用。分析データではない |
+| 132 | locationsCount | 拠点 | × | 同上 |
+| 133 | manualHoldsFulfillmentOrders | フルフィルメント | × | 保留中フルフィルメント管理。分析データではない |
+| 134 | market | マーケット | × | 国・地域設定1件取得用。分析データではない |
+| 135 | marketingActivities | マーケティング | × | Shopify内のマーケティング活動。Synergy!の配信ログを使うため不要（A-4） |
+| 136 | marketingActivity | マーケティング | × | 同上 |
+| 137 | marketingEvent | マーケティング | × | 同上 |
+| 138 | marketingEvents | マーケティング | × | 同上 |
+| 139 | marketLocalizableResource | ローカライズ | × | 多言語対応設定。分析データではない |
+| 140 | marketLocalizableResources | ローカライズ | × | 同上 |
+| 141 | marketLocalizableResourcesByIds | ローカライズ | × | 同上 |
+| 142 | markets | マーケット | × | 国・地域設定一覧。分析データではない |
+| 143 | marketsResolvedValues | マーケット | × | 同上 |
+| 144 | menu | オンラインストア | × | ナビゲーションメニュー設定。分析データではない |
+| 145 | menus | オンラインストア | × | 同上 |
+| 146 | metafieldDefinition | メタフィールド | × | メタフィールド定義管理用。分析データではない |
+| 147 | metafieldDefinitions | メタフィールド | × | 同上 |
+| 148 | metafieldDefinitionTypes | メタフィールド | × | 同上 |
+| 149 | metaobject | メタオブジェクト | × | カスタムデータ構造管理用。今回の要件には含まれない |
+| 150 | metaobjectByHandle | メタオブジェクト | × | 同上 |
+| 151 | metaobjectDefinition | メタオブジェクト | × | 同上 |
+| 152 | metaobjectDefinitionByType | メタオブジェクト | × | 同上 |
+| 153 | metaobjectDefinitions | メタオブジェクト | × | 同上 |
+| 154 | metaobjects | メタオブジェクト | × | 同上 |
+| 155 | mobilePlatformApplication | モバイル | × | モバイルアプリ設定。分析データではない |
+| 156 | mobilePlatformApplications | モバイル | × | 同上 |
+| 157 | node | 汎用 | × | 汎用ID検索。バッチ取得には使わない |
+| 158 | nodes | 汎用 | × | 同上 |
+| 159 | onlineStore | オンラインストア | × | オンラインストア設定。分析データではない |
+| 160 | order | 注文 | － | 単件取得用。一覧はordersを使う |
+| 161 | orderByIdentifier | 注文 | － | 同上 |
+| 162 | orderEditSession | 注文 | × | 注文編集セッション管理用。分析データではない |
+| 163 | orderPaymentStatus | 注文 | × | 決済状態確認用。注文データはOrderに含まれるため不要 |
+| 164 | orders | 注文 | **○** | A-1：注文データ取得対象。注文ヘッダー・金額・状態・顧客IDなどを取得 |
+| 165 | orderSavedSearches | 注文 | × | 管理用保存検索。分析データではない |
+| 166 | ordersCount | 注文 | × | 管理用カウント。分析データではない |
+| 167 | page | コンテンツ | × | 固定ページ管理用。分析データではない |
+| 168 | pages | コンテンツ | × | 同上 |
+| 169 | pagesCount | コンテンツ | × | 同上 |
+| 170 | paymentCustomization | 決済 | × | 決済カスタマイズ設定。分析データではない |
+| 171 | paymentCustomizations | 決済 | × | 同上 |
+| 172 | paymentTermsTemplates | 決済 | × | 支払い条件テンプレート。分析データではない |
+| 173 | pendingOrdersCount | 注文 | × | 管理用カウント。分析データではない |
+| 174 | pointOfSaleDevice | POS | × | 実店舗POS端末管理。今回のEC分析には対象外 |
+| 175 | priceList | 価格リスト | × | B2B向け価格リスト設定。分析データではない |
+| 176 | priceLists | 価格リスト | × | 同上 |
+| 177 | privacySettings | プライバシー | × | プライバシー設定。分析データではない |
+| 178 | product | 商品 | － | 単件取得用。一覧はproductsを使う |
+| 179 | productByIdentifier | 商品 | － | 同上 |
+| 180 | productDuplicateJob | 商品 | × | 商品複製ジョブ管理用。分析データではない |
+| 181 | productFeed | 商品 | × | 商品フィード設定。分析データではない |
+| 182 | productFeeds | 商品 | × | 同上 |
+| 183 | productOperation | 商品 | × | 商品操作ジョブ管理用。分析データではない |
+| 184 | productResourceFeedback | 商品 | × | 商品掲載チャネルのフィードバック。分析データではない |
+| 185 | products | 商品 | **○** | A-1：商品データ取得対象。商品名・タイプ・ステータス等を取得。B-6の商品マスタ統合に使用 |
+| 186 | productSavedSearches | 商品 | × | 管理用保存検索。分析データではない |
+| 187 | productsCount | 商品 | × | 管理用カウント。分析データではない |
+| 188 | productTags | 商品 | × | 商品タグ一覧。タグはProductオブジェクト内から取得するため不要 |
+| 189 | productTypes | 商品 | × | 商品タイプ一覧。同上 |
+| 190 | productVariant | 商品 | － | 単件取得用。一覧はproductVariantsを使う |
+| 191 | productVariantByIdentifier | 商品 | － | 同上 |
+| 192 | productVariants | 商品 | **○** | A-1・B-6：バリアント（SKU・価格・在庫数）取得対象。CRMレンズマスタとのSKU/JAN突合キーとして使用 |
+| 193 | productVariantsCount | 商品 | × | 管理用カウント。分析データではない |
+| 194 | productVendors | 商品 | × | ベンダー一覧。ベンダー情報はProductオブジェクト内から取得するため不要 |
+| 195 | publicApiVersions | API | × | APIバージョン一覧。分析データではない |
+| 196 | publication | 販売チャネル | × | 販売チャネル設定。分析データではない |
+| 197 | publications | 販売チャネル | × | 同上 |
+| 198 | publicationsCount | 販売チャネル | × | 同上 |
+| 199 | publishedProductsCount | 商品 | × | 管理用カウント。分析データではない |
+| 200 | refund | 返金 | － | 単件取得用。返金データはordersのネスト、またはrefundsConnectionから取得 |
+| 201 | return | 返品 | × | 返品プロセス管理用。財務的な返金はRefundで取得するため不要 |
+| 202 | returnableFulfillment | 返品 | × | 同上 |
+| 203 | returnableFulfillments | 返品 | × | 同上 |
+| 204 | returnCalculate | 返品 | × | 同上 |
+| 205 | returnReasonDefinitions | 返品 | × | 返品理由の定義設定。分析データではない |
+| 206 | reverseDelivery | 返品配送 | × | 返品配送管理。分析データではない |
+| 207 | reverseFulfillmentOrder | 返品配送 | × | 同上 |
+| 208 | scriptTag | スクリプト | × | JavaScriptタグ管理。分析データではない |
+| 209 | scriptTags | スクリプト | × | 同上 |
+| 210 | segment | セグメント | × | Shopifyのセグメント機能。BigQuery側で独自に行うため不要（C-1） |
+| 211 | segmentFilters | セグメント | × | 同上 |
+| 212 | segmentFilterSuggestions | セグメント | × | 同上 |
+| 213 | segmentMigrations | セグメント | × | 同上 |
+| 214 | segments | セグメント | × | 同上 |
+| 215 | segmentsCount | セグメント | × | 同上 |
+| 216 | segmentValueSuggestions | セグメント | × | 同上 |
+| 217 | sellingPlanGroup | サブスク | × | サブスクリプション販売設定。要件に記載なし |
+| 218 | sellingPlanGroups | サブスク | × | 同上 |
+| 219 | serverPixel | トラッキング | × | サーバーサイドピクセル設定。GA4で行動データを取得するため不要（A-5） |
+| 220 | shop | ショップ設定 | × | ショップ基本情報。分析データではなく設定情報のため対象外 |
+| 221 | shopBillingPreferences | ショップ設定 | × | 課金設定。分析データではない |
+| 222 | shopifyFunction | アプリ | × | Shopify Functions設定。分析データではない |
+| 223 | shopifyFunctions | アプリ | × | 同上 |
+| 224 | shopifyPaymentsAccount | 決済 | × | Shopify Payments口座情報。分析データではない |
+| 225 | shopifyqlQuery | 分析 | × | Shopify独自分析クエリ。BigQueryで独自に分析するため不要 |
+| 226 | shopLocales | ショップ設定 | × | 言語設定。分析データではない |
+| 227 | shopPayPaymentRequestReceipt | 決済 | × | Shop Pay決済レシート。分析データではない |
+| 228 | shopPayPaymentRequestReceipts | 決済 | × | 同上 |
+| 229 | staffMember | スタッフ | × | スタッフ1件取得用。分析データではない |
+| 230 | staffMembers | スタッフ | × | スタッフ一覧。分析データではない |
+| 231 | standardMetafieldDefinitionTemplates | メタフィールド | × | メタフィールドテンプレート。分析データではない |
+| 232 | storeCreditAccount | ストアクレジット | × | ストアクレジット管理。要件に記載なし |
+| 233 | subscriptionBillingAttempt | サブスク | × | サブスク請求試行1件取得用。要件に記載なし |
+| 234 | subscriptionBillingAttempts | サブスク | × | 同上 |
+| 235 | subscriptionBillingCycle | サブスク | × | サブスク請求サイクル管理。要件に記載なし |
+| 236 | subscriptionBillingCycleBulkResults | サブスク | × | 同上 |
+| 237 | subscriptionBillingCycles | サブスク | × | 同上 |
+| 238 | subscriptionContract | サブスク | × | サブスク契約1件取得用。要件に記載なし |
+| 239 | subscriptionContracts | サブスク | × | サブスク契約一覧。要件に記載なし |
+| 240 | subscriptionDraft | サブスク | × | サブスク下書き管理。要件に記載なし |
+| 241 | taxonomy | 分類 | × | 商品分類体系。分析データではない |
+| 242 | tenderTransactions | 決済 | × | 決済トランザクション一覧。財務システム連携用。今回の要件外 |
+| 243 | theme | オンラインストア | × | テーマ設定。分析データではない |
+| 244 | themes | オンラインストア | × | 同上 |
+| 245 | translatableResource | ローカライズ | × | 翻訳設定。分析データではない |
+| 246 | translatableResources | ローカライズ | × | 同上 |
+| 247 | translatableResourcesByIds | ローカライズ | × | 同上 |
+| 248 | urlRedirect | オンラインストア | × | URLリダイレクト設定。分析データではない |
+| 249 | urlRedirectImport | オンラインストア | × | 同上 |
+| 250 | urlRedirects | オンラインストア | × | 同上 |
+| 251 | urlRedirectSavedSearches | オンラインストア | × | 同上 |
+| 252 | urlRedirectsCount | オンラインストア | × | 同上 |
+| 253 | validation | チェックアウト | × | チェックアウト検証設定。分析データではない |
+| 254 | validations | チェックアウト | × | 同上 |
+| 255 | webhookSubscription | Webhook | × | Webhook設定。分析データではない |
+| 256 | webhookSubscriptions | Webhook | × | 同上 |
+| 257 | webhookSubscriptionsCount | Webhook | × | 同上 |
+| 258 | webPixel | トラッキング | × | Webピクセル設定。GA4で行動データを取得するため不要（A-5） |
+| 259 | webPresences | オンラインストア | × | ドメイン・マーケット設定。分析データではない |
+
+---
+
+## 取得対象まとめ
+
+| フィールド | 取得対象オブジェクト | 関連要件 |
+|---|---|---|
+| customers | Customer | A-1（顧客データ取得） |
+| orders | Order（LineItems・Refundsを含む） | A-1（注文データ取得）、B-3（明細展開）、C-2（LTV分析） |
+| products | Product | A-1（商品データ取得）、B-6（商品マスタ統合） |
+| productVariants | ProductVariant | A-1（商品データ取得）、B-6（SKU/JANによる商品マスタ統合） |
