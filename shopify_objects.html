@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>Shopify Admin GraphQL API オブジェクト一覧</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Segoe UI", Arial, sans-serif; font-size: 14px; color: #222; background: #f5f6fa; display: flex; }
+  nav { width: 260px; min-width: 220px; background: #1a1a2e; color: #fff; height: 100vh; position: sticky; top: 0; overflow-y: auto; padding: 16px 0; flex-shrink: 0; }
+  nav h2 { font-size: 13px; color: #aaa; padding: 12px 16px 4px; text-transform: uppercase; letter-spacing: .05em; }
+  nav ul { list-style: none; }
+  nav ul li a { display: block; padding: 7px 16px; color: #ccd; font-size: 13px; text-decoration: none; border-left: 3px solid transparent; }
+  nav ul li a:hover { background: #2a2a4e; border-left-color: #5c6bc0; color: #fff; }
+  nav .badge { background: #5c6bc0; border-radius: 10px; padding: 1px 7px; font-size: 11px; float: right; }
+  #search-nav { width: calc(100% - 24px); margin: 8px 12px; padding: 7px 10px; background: #2a2a4e; border: 1px solid #444; border-radius: 4px; color: #fff; font-size: 13px; }
+  #search-nav::placeholder { color: #888; }
+  main { flex: 1; max-width: 900px; margin: 32px auto; padding: 0 24px 64px; }
+  header { background: #1a1a2e; color: #fff; padding: 24px 32px; margin-bottom: 32px; border-radius: 8px; }
+  header h1 { font-size: 20px; }
+  header p { font-size: 13px; color: #aaa; margin-top: 4px; }
+  section { margin-bottom: 48px; }
+  section h2 { font-size: 17px; margin-bottom: 10px; color: #1a1a2e; border-left: 4px solid #5c6bc0; padding-left: 10px; }
+  .col-count { font-size: 13px; color: #888; font-weight: normal; }
+  table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 6px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+  thead tr { background: #1a1a2e; color: #fff; }
+  thead th { padding: 9px 14px; text-align: left; font-size: 13px; }
+  tbody tr { border-bottom: 1px solid #eee; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #f0f4ff; }
+  tbody td { padding: 7px 14px; }
+  td.num { color: #bbb; font-size: 12px; width: 40px; text-align: center; }
+  a { color: #5c6bc0; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .back { display: inline-block; margin-top: 8px; font-size: 12px; color: #999; }
+</style>
+</head>
+<body>
+<nav id="top">
+  <h2>カテゴリ</h2>
+  <input id="search-nav" type="text" placeholder="カテゴリ検索..." oninput="filterNav(this.value)">
+  <ul id="nav-list">
+    <li><a href="#access">Access <span class="badge">3</span></a></li>
+<li><a href="#analytics">Analytics <span class="badge">3</span></a></li>
+<li><a href="#apps">Apps <span class="badge">9</span></a></li>
+<li><a href="#b2b">B2B <span class="badge">10</span></a></li>
+<li><a href="#billing">Billing <span class="badge">15</span></a></li>
+<li><a href="#bulk-operations">Bulk operations <span class="badge">1</span></a></li>
+<li><a href="#cart">Cart <span class="badge">1</span></a></li>
+<li><a href="#checkout-and-accounts-configurations">Checkout and accounts configurations <span class="badge">2</span></a></li>
+<li><a href="#checkout-branding">Checkout branding <span class="badge">12</span></a></li>
+<li><a href="#common-objects">Common objects <span class="badge">201</span></a></li>
+<li><a href="#customers">Customers <span class="badge">36</span></a></li>
+<li><a href="#discounts-and-marketing">Discounts and marketing <span class="badge">63</span></a></li>
+<li><a href="#events">Events <span class="badge">8</span></a></li>
+<li><a href="#inventory">Inventory <span class="badge">16</span></a></li>
+<li><a href="#localizations">Localizations <span class="badge">9</span></a></li>
+<li><a href="#metafields">Metafields <span class="badge">6</span></a></li>
+<li><a href="#metaobjects">Metaobjects <span class="badge">15</span></a></li>
+<li><a href="#online-store">Online store <span class="badge">27</span></a></li>
+<li><a href="#orders">Orders <span class="badge">165</span></a></li>
+<li><a href="#privacy">Privacy <span class="badge">7</span></a></li>
+<li><a href="#products-and-collections">Products and collections <span class="badge">101</span></a></li>
+<li><a href="#retail">Retail <span class="badge">12</span></a></li>
+<li><a href="#shipping-and-fulfillment">Shipping and fulfillment <span class="badge">56</span></a></li>
+<li><a href="#shopify-markets">Shopify Markets <span class="badge">12</span></a></li>
+<li><a href="#shopify-payments">Shopify Payments <span class="badge">23</span></a></li>
+<li><a href="#store-properties">Store properties <span class="badge">19</span></a></li>
+<li><a href="#webhooks">Webhooks <span class="badge">4</span></a></li>
+
+  </ul>
+</nav>
+<main>
+  <header>
+    <h1>Shopify Admin GraphQL API オブジェクト一覧</h1>
+    <p>カテゴリ数: 27 &nbsp;|&nbsp; 総オブジェクト数: 836 &nbsp;|&nbsp; ソース: shopify.dev/docs/api/admin-graphql/latest</p>
+  </header>
+  
+<section id="access">
+  <h2>Access <span class="col-count">(3 objects)</span></h2>
+  <table>
+    <thead><tr><th>#</th><th>オブジェクト名</th></tr></thead>
+    <tbody><tr><td class="num">1</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/AccessScope" target="_blank">AccessScope</a></td></tr>
+<tr><td class="num">2</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DelegateAccessToken" target="_blank">DelegateAccessToken</a></td></tr>
+<tr><td class="num">3</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/StorefrontAccessToken" target="_blank">StorefrontAccessToken</a></td></tr>
+</tbody>
+  </table>
+  <a class="back" href="#top">▲ トップへ戻る</a>
+</section>
+
+<section id="analytics">
+  <h2>Analytics <span class="col-count">(3 objects)</span></h2>
+  <table>
+    <thead><tr><th>#</th><th>オブジェクト名</th></tr></thead>
+    <tbody><tr><td class="num">1</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopifyqlQueryResponse" target="_blank">ShopifyqlQueryResponse</a></td></tr>
+<tr><td class="num">2</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopifyqlTableData" target="_blank">ShopifyqlTableData</a></td></tr>
+<tr><td class="num">3</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopifyqlTableDataColumn" target="_blank">ShopifyqlTableDataColumn</a></td></tr>
+</tbody>
+  </table>
+  <a class="back" href="#top">▲ トップへ戻る</a>
+</section>
+
+<section id="apps">
+  <h2>Apps <span class="col-count">(9 objects)</span></h2>
+  <table>
+    <thead><tr><th>#</th><th>オブジェクト名</th></tr></thead>
+    <tbody><tr><td class="num">1</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/AndroidApplication" target="_blank">AndroidApplication</a></td></tr>
+<tr><td class="num">2</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/App" target="_blank">App</a></td></tr>
+<tr><td class="num">3</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/AppFeedback" target="_blank">AppFeedback</a></td></tr>
+<tr><td class="num">4</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/AppInstallation" target="_blank">AppInstallation</a></td></tr>
+<tr><td class="num">5</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/AppleApplication" target="_blank">AppleApplication</a></td></tr>
+<tr><td class="num">6</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/FailedRequirement" target="_blank">FailedRequirement</a></td></tr>
+<tr><td class="num">7</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Link" target="_blank">Link</a></td></tr>
+<tr><td class="num">8</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Publication" target="_blank">Publication</a></td></tr>
+<tr><td class="num">9</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ResourceFeedback" target="_blank">ResourceFeedback</a></td></tr>
+</tbody>
+  </table>
+  <a class="back" href="#top">▲ トップへ戻る</a>
+</section>
+
+<section id="b2b">
+  <h2>B2B <span class="col-count">(10 objects)</span></h2>
+  <table>
+    <thead><tr><th>#</th><th>オブジェクト名</th></tr></thead>
+    <tbody><tr><td class="num">1</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Company" target="_blank">Company</a></td></tr>
+<tr><td class="num">2</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CompanyAddress" target="_blank">CompanyAddress</a></td></tr>
+<tr><td class="num">3</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CompanyContact" target="_blank">CompanyContact</a></td></tr>
+<tr><td class="num">4</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CompanyContactRole" target="_blank">CompanyContactRole</a></td></tr>
+<tr><td class="num">5</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CompanyContactRoleAssignment" target="_blank">CompanyContactRoleAssignment</a></td></tr>
+<tr><td class="num">6</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CompanyLocation" target="_blank">CompanyLocation</a></td></tr>
+<tr><td class="num">7</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CompanyLocationsCondition" target="_blank">CompanyLocationsCondition</a></td></tr>
+<tr><td class="num">8</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CompanyLocationStaffMemberAssignment" target="_blank">CompanyLocationStaffMemberAssignment</a></td></tr>
+<tr><td class="num">9</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CompanyLocationTaxSettings" target="_blank">CompanyLocationTaxSettings</a></td></tr>
+<tr><td class="num">10</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PurchasingCompany" target="_blank">PurchasingCompany</a></td></tr>
+</tbody>
+  </table>
+  <a class="back" href="#top">▲ トップへ戻る</a>
+</section>
+
+<section id="billing">
+  <h2>Billing <span class="col-count">(15 objects)</span></h2>
+  <table>
+    <thead><tr><th>#</th><th>オブジェクト名</th></tr></thead>
+    <tbody><tr><td class="num">1</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/AppCredit" target="_blank">AppCredit</a></td></tr>
+<tr><td class="num">2</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/AppPlanV2" target="_blank">AppPlanV2</a></td></tr>
+<tr><td class="num">3</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/AppPurchaseOneTime" target="_blank">AppPurchaseOneTime</a></td></tr>
+<tr><td class="num">4</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/AppRecurringPricing" target="_blank">AppRecurringPricing</a></td></tr>
+<tr><td class="num">5</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/AppRevenueAttributionRecord" target="_blank">AppRevenueAttributionRecord</a></td></tr>
+<tr><td class="num">6</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/AppSubscription" target="_blank">AppSubscription</a></td></tr>
+<tr><td class="num">7</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/AppSubscriptionDiscount" target="_blank">AppSubscriptionDiscount</a></td></tr>
+<tr><td class="num">8</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/AppSubscriptionDiscountAmount" target="_blank">AppSubscriptionDiscountAmount</a></td></tr>
+<tr><td class="num">9</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/AppSubscriptionDiscountPercentage" target="_blank">AppSubscriptionDiscountPercentage</a></td></tr>
+<tr><td class="num">10</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/AppSubscriptionLineItem" target="_blank">AppSubscriptionLineItem</a></td></tr>
+<tr><td class="num">11</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/AppUsagePricing" target="_blank">AppUsagePricing</a></td></tr>
+<tr><td class="num">12</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/AppUsageRecord" target="_blank">AppUsageRecord</a></td></tr>
+<tr><td class="num">13</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/EntitlementsType" target="_blank">EntitlementsType</a></td></tr>
+<tr><td class="num">14</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MarketsType" target="_blank">MarketsType</a></td></tr>
+<tr><td class="num">15</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopBillingPreferences" target="_blank">ShopBillingPreferences</a></td></tr>
+</tbody>
+  </table>
+  <a class="back" href="#top">▲ トップへ戻る</a>
+</section>
+
+<section id="bulk-operations">
+  <h2>Bulk operations <span class="col-count">(1 objects)</span></h2>
+  <table>
+    <thead><tr><th>#</th><th>オブジェクト名</th></tr></thead>
+    <tbody><tr><td class="num">1</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/BulkOperation" target="_blank">BulkOperation</a></td></tr>
+</tbody>
+  </table>
+  <a class="back" href="#top">▲ トップへ戻る</a>
+</section>
+
+<section id="cart">
+  <h2>Cart <span class="col-count">(1 objects)</span></h2>
+  <table>
+    <thead><tr><th>#</th><th>オブジェクト名</th></tr></thead>
+    <tbody><tr><td class="num">1</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CartTransform" target="_blank">CartTransform</a></td></tr>
+</tbody>
+  </table>
+  <a class="back" href="#top">▲ トップへ戻る</a>
+</section>
+
+<section id="checkout-and-accounts-configurations">
+  <h2>Checkout and accounts configurations <span class="col-count">(2 objects)</span></h2>
+  <table>
+    <thead><tr><th>#</th><th>オブジェクト名</th></tr></thead>
+    <tbody><tr><td class="num">1</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfiguration" target="_blank">CheckoutAndAccountsConfiguration</a></td></tr>
+<tr><td class="num">2</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationOverride" target="_blank">CheckoutAndAccountsConfigurationOverride</a></td></tr>
+</tbody>
+  </table>
+  <a class="back" href="#top">▲ トップへ戻る</a>
+</section>
+
+<section id="checkout-branding">
+  <h2>Checkout branding <span class="col-count">(12 objects)</span></h2>
+  <table>
+    <thead><tr><th>#</th><th>オブジェクト名</th></tr></thead>
+    <tbody><tr><td class="num">1</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBranding" target="_blank">CheckoutBranding</a></td></tr>
+<tr><td class="num">2</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingControl" target="_blank">CheckoutBrandingControl</a></td></tr>
+<tr><td class="num">3</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingCustomizations" target="_blank">CheckoutBrandingCustomizations</a></td></tr>
+<tr><td class="num">4</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingDesignSystem" target="_blank">CheckoutBrandingDesignSystem</a></td></tr>
+<tr><td class="num">5</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingFontGroup" target="_blank">CheckoutBrandingFontGroup</a></td></tr>
+<tr><td class="num">6</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingFontSize" target="_blank">CheckoutBrandingFontSize</a></td></tr>
+<tr><td class="num">7</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingHeader" target="_blank">CheckoutBrandingHeader</a></td></tr>
+<tr><td class="num">8</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingImage" target="_blank">CheckoutBrandingImage</a></td></tr>
+<tr><td class="num">9</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingLogo" target="_blank">CheckoutBrandingLogo</a></td></tr>
+<tr><td class="num">10</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingMain" target="_blank">CheckoutBrandingMain</a></td></tr>
+<tr><td class="num">11</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingOrderSummary" target="_blank">CheckoutBrandingOrderSummary</a></td></tr>
+<tr><td class="num">12</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingTypography" target="_blank">CheckoutBrandingTypography</a></td></tr>
+</tbody>
+  </table>
+  <a class="back" href="#top">▲ トップへ戻る</a>
+</section>
+
+<section id="common-objects">
+  <h2>Common objects <span class="col-count">(201 objects)</span></h2>
+  <table>
+    <thead><tr><th>#</th><th>オブジェクト名</th></tr></thead>
+    <tbody><tr><td class="num">1</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/AbandonedCheckout" target="_blank">AbandonedCheckout</a></td></tr>
+<tr><td class="num">2</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/AbandonedCheckoutLineItem" target="_blank">AbandonedCheckoutLineItem</a></td></tr>
+<tr><td class="num">3</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/AbandonedCheckoutLineItemComponent" target="_blank">AbandonedCheckoutLineItemComponent</a></td></tr>
+<tr><td class="num">4</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/AbandonedCheckoutLineItemParentRelationship" target="_blank">AbandonedCheckoutLineItemParentRelationship</a></td></tr>
+<tr><td class="num">5</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ApiVersion" target="_blank">ApiVersion</a></td></tr>
+<tr><td class="num">6</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/AppRevokeAccessScopesAppRevokeScopeError" target="_blank">AppRevokeAccessScopesAppRevokeScopeError</a></td></tr>
+<tr><td class="num">7</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/AppUninstallAppUninstallError" target="_blank">AppUninstallAppUninstallError</a></td></tr>
+<tr><td class="num">8</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/AvailableChannelDefinitionsByChannel" target="_blank">AvailableChannelDefinitionsByChannel</a></td></tr>
+<tr><td class="num">9</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/BankAccount" target="_blank">BankAccount</a></td></tr>
+<tr><td class="num">10</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/BuyerExperienceConfiguration" target="_blank">BuyerExperienceConfiguration</a></td></tr>
+<tr><td class="num">11</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Channel" target="_blank">Channel</a></td></tr>
+<tr><td class="num">12</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ChannelDefinition" target="_blank">ChannelDefinition</a></td></tr>
+<tr><td class="num">13</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ChannelInformation" target="_blank">ChannelInformation</a></td></tr>
+<tr><td class="num">14</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBranding" target="_blank">CheckoutAndAccountsConfigurationBranding</a></td></tr>
+<tr><td class="num">15</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingBaseColorRoles" target="_blank">CheckoutAndAccountsConfigurationBrandingBaseColorRoles</a></td></tr>
+<tr><td class="num">16</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingButton" target="_blank">CheckoutAndAccountsConfigurationBrandingButton</a></td></tr>
+<tr><td class="num">17</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingBuyerJourney" target="_blank">CheckoutAndAccountsConfigurationBrandingBuyerJourney</a></td></tr>
+<tr><td class="num">18</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingCartLink" target="_blank">CheckoutAndAccountsConfigurationBrandingCartLink</a></td></tr>
+<tr><td class="num">19</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingCheckbox" target="_blank">CheckoutAndAccountsConfigurationBrandingCheckbox</a></td></tr>
+<tr><td class="num">20</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingCheckoutComponents" target="_blank">CheckoutAndAccountsConfigurationBrandingCheckoutComponents</a></td></tr>
+<tr><td class="num">21</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingCheckoutFooter" target="_blank">CheckoutAndAccountsConfigurationBrandingCheckoutFooter</a></td></tr>
+<tr><td class="num">22</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingCheckoutHeader" target="_blank">CheckoutAndAccountsConfigurationBrandingCheckoutHeader</a></td></tr>
+<tr><td class="num">23</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingCheckoutSurface" target="_blank">CheckoutAndAccountsConfigurationBrandingCheckoutSurface</a></td></tr>
+<tr><td class="num">24</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingChoiceList" target="_blank">CheckoutAndAccountsConfigurationBrandingChoiceList</a></td></tr>
+<tr><td class="num">25</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingChoiceListGroup" target="_blank">CheckoutAndAccountsConfigurationBrandingChoiceListGroup</a></td></tr>
+<tr><td class="num">26</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingColorRoles" target="_blank">CheckoutAndAccountsConfigurationBrandingColorRoles</a></td></tr>
+<tr><td class="num">27</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingColors" target="_blank">CheckoutAndAccountsConfigurationBrandingColors</a></td></tr>
+<tr><td class="num">28</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingComponents" target="_blank">CheckoutAndAccountsConfigurationBrandingComponents</a></td></tr>
+<tr><td class="num">29</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingContainerDivider" target="_blank">CheckoutAndAccountsConfigurationBrandingContainerDivider</a></td></tr>
+<tr><td class="num">30</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingContent" target="_blank">CheckoutAndAccountsConfigurationBrandingContent</a></td></tr>
+<tr><td class="num">31</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingControl" target="_blank">CheckoutAndAccountsConfigurationBrandingControl</a></td></tr>
+<tr><td class="num">32</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingControlColorRoles" target="_blank">CheckoutAndAccountsConfigurationBrandingControlColorRoles</a></td></tr>
+<tr><td class="num">33</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingCornerRadiusVariables" target="_blank">CheckoutAndAccountsConfigurationBrandingCornerRadiusVariables</a></td></tr>
+<tr><td class="num">34</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingCustomerAccountsComponents" target="_blank">CheckoutAndAccountsConfigurationBrandingCustomerAccountsComponents</a></td></tr>
+<tr><td class="num">35</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingCustomerAccountsFooter" target="_blank">CheckoutAndAccountsConfigurationBrandingCustomerAccountsFooter</a></td></tr>
+<tr><td class="num">36</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingCustomerAccountsHeader" target="_blank">CheckoutAndAccountsConfigurationBrandingCustomerAccountsHeader</a></td></tr>
+<tr><td class="num">37</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingCustomerAccountsLogo" target="_blank">CheckoutAndAccountsConfigurationBrandingCustomerAccountsLogo</a></td></tr>
+<tr><td class="num">38</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingCustomerAccountsMain" target="_blank">CheckoutAndAccountsConfigurationBrandingCustomerAccountsMain</a></td></tr>
+<tr><td class="num">39</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingCustomerAccountsMainSection" target="_blank">CheckoutAndAccountsConfigurationBrandingCustomerAccountsMainSection</a></td></tr>
+<tr><td class="num">40</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingCustomerAccountsSurface" target="_blank">CheckoutAndAccountsConfigurationBrandingCustomerAccountsSurface</a></td></tr>
+<tr><td class="num">41</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingCustomFont" target="_blank">CheckoutAndAccountsConfigurationBrandingCustomFont</a></td></tr>
+<tr><td class="num">42</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingCustomFontGroup" target="_blank">CheckoutAndAccountsConfigurationBrandingCustomFontGroup</a></td></tr>
+<tr><td class="num">43</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingDesignTokenColors" target="_blank">CheckoutAndAccountsConfigurationBrandingDesignTokenColors</a></td></tr>
+<tr><td class="num">44</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingDesignTokens" target="_blank">CheckoutAndAccountsConfigurationBrandingDesignTokens</a></td></tr>
+<tr><td class="num">45</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingDividerStyle" target="_blank">CheckoutAndAccountsConfigurationBrandingDividerStyle</a></td></tr>
+<tr><td class="num">46</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingExpressCheckout" target="_blank">CheckoutAndAccountsConfigurationBrandingExpressCheckout</a></td></tr>
+<tr><td class="num">47</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingExpressCheckoutButton" target="_blank">CheckoutAndAccountsConfigurationBrandingExpressCheckoutButton</a></td></tr>
+<tr><td class="num">48</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingFontSize" target="_blank">CheckoutAndAccountsConfigurationBrandingFontSize</a></td></tr>
+<tr><td class="num">49</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingFooter" target="_blank">CheckoutAndAccountsConfigurationBrandingFooter</a></td></tr>
+<tr><td class="num">50</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingFooterContent" target="_blank">CheckoutAndAccountsConfigurationBrandingFooterContent</a></td></tr>
+<tr><td class="num">51</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingHeader" target="_blank">CheckoutAndAccountsConfigurationBrandingHeader</a></td></tr>
+<tr><td class="num">52</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingHeaderCartLink" target="_blank">CheckoutAndAccountsConfigurationBrandingHeaderCartLink</a></td></tr>
+<tr><td class="num">53</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingHeadingLevel" target="_blank">CheckoutAndAccountsConfigurationBrandingHeadingLevel</a></td></tr>
+<tr><td class="num">54</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingImage" target="_blank">CheckoutAndAccountsConfigurationBrandingImage</a></td></tr>
+<tr><td class="num">55</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingLogo" target="_blank">CheckoutAndAccountsConfigurationBrandingLogo</a></td></tr>
+<tr><td class="num">56</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingMain" target="_blank">CheckoutAndAccountsConfigurationBrandingMain</a></td></tr>
+<tr><td class="num">57</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingMainSection" target="_blank">CheckoutAndAccountsConfigurationBrandingMainSection</a></td></tr>
+<tr><td class="num">58</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingMerchandiseThumbnail" target="_blank">CheckoutAndAccountsConfigurationBrandingMerchandiseThumbnail</a></td></tr>
+<tr><td class="num">59</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingMerchandiseThumbnailBadge" target="_blank">CheckoutAndAccountsConfigurationBrandingMerchandiseThumbnailBadge</a></td></tr>
+<tr><td class="num">60</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingOrderSummary" target="_blank">CheckoutAndAccountsConfigurationBrandingOrderSummary</a></td></tr>
+<tr><td class="num">61</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingOrderSummarySection" target="_blank">CheckoutAndAccountsConfigurationBrandingOrderSummarySection</a></td></tr>
+<tr><td class="num">62</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingPalette" target="_blank">CheckoutAndAccountsConfigurationBrandingPalette</a></td></tr>
+<tr><td class="num">63</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingPrimaryButtonColorRoles" target="_blank">CheckoutAndAccountsConfigurationBrandingPrimaryButtonColorRoles</a></td></tr>
+<tr><td class="num">64</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingSecondaryButtonColorRoles" target="_blank">CheckoutAndAccountsConfigurationBrandingSecondaryButtonColorRoles</a></td></tr>
+<tr><td class="num">65</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingSelect" target="_blank">CheckoutAndAccountsConfigurationBrandingSelect</a></td></tr>
+<tr><td class="num">66</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingShared" target="_blank">CheckoutAndAccountsConfigurationBrandingShared</a></td></tr>
+<tr><td class="num">67</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingSharedColors" target="_blank">CheckoutAndAccountsConfigurationBrandingSharedColors</a></td></tr>
+<tr><td class="num">68</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingSharedTypographyStyle" target="_blank">CheckoutAndAccountsConfigurationBrandingSharedTypographyStyle</a></td></tr>
+<tr><td class="num">69</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingShopifyFont" target="_blank">CheckoutAndAccountsConfigurationBrandingShopifyFont</a></td></tr>
+<tr><td class="num">70</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingShopifyFontGroup" target="_blank">CheckoutAndAccountsConfigurationBrandingShopifyFontGroup</a></td></tr>
+<tr><td class="num">71</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingSignInComponents" target="_blank">CheckoutAndAccountsConfigurationBrandingSignInComponents</a></td></tr>
+<tr><td class="num">72</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingSignInHeader" target="_blank">CheckoutAndAccountsConfigurationBrandingSignInHeader</a></td></tr>
+<tr><td class="num">73</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingSignInLogo" target="_blank">CheckoutAndAccountsConfigurationBrandingSignInLogo</a></td></tr>
+<tr><td class="num">74</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingSignInMain" target="_blank">CheckoutAndAccountsConfigurationBrandingSignInMain</a></td></tr>
+<tr><td class="num">75</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingSignInSurface" target="_blank">CheckoutAndAccountsConfigurationBrandingSignInSurface</a></td></tr>
+<tr><td class="num">76</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingSurfaces" target="_blank">CheckoutAndAccountsConfigurationBrandingSurfaces</a></td></tr>
+<tr><td class="num">77</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingTextField" target="_blank">CheckoutAndAccountsConfigurationBrandingTextField</a></td></tr>
+<tr><td class="num">78</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingTypography" target="_blank">CheckoutAndAccountsConfigurationBrandingTypography</a></td></tr>
+<tr><td class="num">79</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutAndAccountsConfigurationBrandingTypographyStyle" target="_blank">CheckoutAndAccountsConfigurationBrandingTypographyStyle</a></td></tr>
+<tr><td class="num">80</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingButton" target="_blank">CheckoutBrandingButton</a></td></tr>
+<tr><td class="num">81</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingButtonColorRoles" target="_blank">CheckoutBrandingButtonColorRoles</a></td></tr>
+<tr><td class="num">82</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingBuyerJourney" target="_blank">CheckoutBrandingBuyerJourney</a></td></tr>
+<tr><td class="num">83</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingCartLink" target="_blank">CheckoutBrandingCartLink</a></td></tr>
+<tr><td class="num">84</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingCheckbox" target="_blank">CheckoutBrandingCheckbox</a></td></tr>
+<tr><td class="num">85</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingChoiceList" target="_blank">CheckoutBrandingChoiceList</a></td></tr>
+<tr><td class="num">86</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingChoiceListGroup" target="_blank">CheckoutBrandingChoiceListGroup</a></td></tr>
+<tr><td class="num">87</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingColorGlobal" target="_blank">CheckoutBrandingColorGlobal</a></td></tr>
+<tr><td class="num">88</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingColorRoles" target="_blank">CheckoutBrandingColorRoles</a></td></tr>
+<tr><td class="num">89</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingColors" target="_blank">CheckoutBrandingColors</a></td></tr>
+<tr><td class="num">90</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingColorScheme" target="_blank">CheckoutBrandingColorScheme</a></td></tr>
+<tr><td class="num">91</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingColorSchemes" target="_blank">CheckoutBrandingColorSchemes</a></td></tr>
+<tr><td class="num">92</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingContainerDivider" target="_blank">CheckoutBrandingContainerDivider</a></td></tr>
+<tr><td class="num">93</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingContent" target="_blank">CheckoutBrandingContent</a></td></tr>
+<tr><td class="num">94</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingControlColorRoles" target="_blank">CheckoutBrandingControlColorRoles</a></td></tr>
+<tr><td class="num">95</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingCornerRadiusVariables" target="_blank">CheckoutBrandingCornerRadiusVariables</a></td></tr>
+<tr><td class="num">96</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingCustomFont" target="_blank">CheckoutBrandingCustomFont</a></td></tr>
+<tr><td class="num">97</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingDividerStyle" target="_blank">CheckoutBrandingDividerStyle</a></td></tr>
+<tr><td class="num">98</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingExpressCheckout" target="_blank">CheckoutBrandingExpressCheckout</a></td></tr>
+<tr><td class="num">99</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingExpressCheckoutButton" target="_blank">CheckoutBrandingExpressCheckoutButton</a></td></tr>
+<tr><td class="num">100</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingFooter" target="_blank">CheckoutBrandingFooter</a></td></tr>
+<tr><td class="num">101</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingFooterContent" target="_blank">CheckoutBrandingFooterContent</a></td></tr>
+<tr><td class="num">102</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingGlobal" target="_blank">CheckoutBrandingGlobal</a></td></tr>
+<tr><td class="num">103</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingHeaderCartLink" target="_blank">CheckoutBrandingHeaderCartLink</a></td></tr>
+<tr><td class="num">104</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingHeadingLevel" target="_blank">CheckoutBrandingHeadingLevel</a></td></tr>
+<tr><td class="num">105</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingMainSection" target="_blank">CheckoutBrandingMainSection</a></td></tr>
+<tr><td class="num">106</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingMerchandiseThumbnail" target="_blank">CheckoutBrandingMerchandiseThumbnail</a></td></tr>
+<tr><td class="num">107</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingMerchandiseThumbnailBadge" target="_blank">CheckoutBrandingMerchandiseThumbnailBadge</a></td></tr>
+<tr><td class="num">108</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingOrderSummarySection" target="_blank">CheckoutBrandingOrderSummarySection</a></td></tr>
+<tr><td class="num">109</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingSelect" target="_blank">CheckoutBrandingSelect</a></td></tr>
+<tr><td class="num">110</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingShopifyFont" target="_blank">CheckoutBrandingShopifyFont</a></td></tr>
+<tr><td class="num">111</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingTextField" target="_blank">CheckoutBrandingTextField</a></td></tr>
+<tr><td class="num">112</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingTypographyStyle" target="_blank">CheckoutBrandingTypographyStyle</a></td></tr>
+<tr><td class="num">113</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutBrandingTypographyStyleGlobal" target="_blank">CheckoutBrandingTypographyStyleGlobal</a></td></tr>
+<tr><td class="num">114</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CheckoutProfile" target="_blank">CheckoutProfile</a></td></tr>
+<tr><td class="num">115</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Count" target="_blank">Count</a></td></tr>
+<tr><td class="num">116</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CustomerCreditCard" target="_blank">CustomerCreditCard</a></td></tr>
+<tr><td class="num">117</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CustomerPaymentInstrumentBillingAddress" target="_blank">CustomerPaymentInstrumentBillingAddress</a></td></tr>
+<tr><td class="num">118</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CustomerPaymentMethod" target="_blank">CustomerPaymentMethod</a></td></tr>
+<tr><td class="num">119</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CustomerPaypalBillingAgreement" target="_blank">CustomerPaypalBillingAgreement</a></td></tr>
+<tr><td class="num">120</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CustomerShopPayAgreement" target="_blank">CustomerShopPayAgreement</a></td></tr>
+<tr><td class="num">121</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DepositPercentage" target="_blank">DepositPercentage</a></td></tr>
+<tr><td class="num">122</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Distance" target="_blank">Distance</a></td></tr>
+<tr><td class="num">123</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Domain" target="_blank">Domain</a></td></tr>
+<tr><td class="num">124</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DomainLocalization" target="_blank">DomainLocalization</a></td></tr>
+<tr><td class="num">125</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/FinanceAppAccessPolicy" target="_blank">FinanceAppAccessPolicy</a></td></tr>
+<tr><td class="num">126</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/FulfillmentConstraintRule" target="_blank">FulfillmentConstraintRule</a></td></tr>
+<tr><td class="num">127</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/FullSyncTraceInfo" target="_blank">FullSyncTraceInfo</a></td></tr>
+<tr><td class="num">128</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/FunctionsAppBridge" target="_blank">FunctionsAppBridge</a></td></tr>
+<tr><td class="num">129</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/FunctionsErrorHistory" target="_blank">FunctionsErrorHistory</a></td></tr>
+<tr><td class="num">130</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/GiftCard" target="_blank">GiftCard</a></td></tr>
+<tr><td class="num">131</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/GiftCardConfiguration" target="_blank">GiftCardConfiguration</a></td></tr>
+<tr><td class="num">132</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/GiftCardCreditTransaction" target="_blank">GiftCardCreditTransaction</a></td></tr>
+<tr><td class="num">133</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/GiftCardDebitTransaction" target="_blank">GiftCardDebitTransaction</a></td></tr>
+<tr><td class="num">134</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/GiftCardExpirationConfiguration" target="_blank">GiftCardExpirationConfiguration</a></td></tr>
+<tr><td class="num">135</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/GiftCardRecipient" target="_blank">GiftCardRecipient</a></td></tr>
+<tr><td class="num">136</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Image" target="_blank">Image</a></td></tr>
+<tr><td class="num">137</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ImageUploadParameter" target="_blank">ImageUploadParameter</a></td></tr>
+<tr><td class="num">138</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Job" target="_blank">Job</a></td></tr>
+<tr><td class="num">139</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/LocalizedField" target="_blank">LocalizedField</a></td></tr>
+<tr><td class="num">140</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MailingAddress" target="_blank">MailingAddress</a></td></tr>
+<tr><td class="num">141</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MerchantApprovalSignals" target="_blank">MerchantApprovalSignals</a></td></tr>
+<tr><td class="num">142</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MetafieldAccess" target="_blank">MetafieldAccess</a></td></tr>
+<tr><td class="num">143</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MetafieldCapabilities" target="_blank">MetafieldCapabilities</a></td></tr>
+<tr><td class="num">144</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MetafieldCapabilityAdminFilterable" target="_blank">MetafieldCapabilityAdminFilterable</a></td></tr>
+<tr><td class="num">145</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MetafieldCapabilityAnalyticsQueryable" target="_blank">MetafieldCapabilityAnalyticsQueryable</a></td></tr>
+<tr><td class="num">146</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MetafieldCapabilityUniqueValues" target="_blank">MetafieldCapabilityUniqueValues</a></td></tr>
+<tr><td class="num">147</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MetafieldDefinitionConstraints" target="_blank">MetafieldDefinitionConstraints</a></td></tr>
+<tr><td class="num">148</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MetafieldDefinitionConstraintValue" target="_blank">MetafieldDefinitionConstraintValue</a></td></tr>
+<tr><td class="num">149</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MetafieldDefinitionIdentifier" target="_blank">MetafieldDefinitionIdentifier</a></td></tr>
+<tr><td class="num">150</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MetafieldIdentifier" target="_blank">MetafieldIdentifier</a></td></tr>
+<tr><td class="num">151</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MetafieldRelation" target="_blank">MetafieldRelation</a></td></tr>
+<tr><td class="num">152</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MetaobjectFieldCapabilityAdminFilterable" target="_blank">MetaobjectFieldCapabilityAdminFilterable</a></td></tr>
+<tr><td class="num">153</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MetaobjectFieldDefinitionCapabilities" target="_blank">MetaobjectFieldDefinitionCapabilities</a></td></tr>
+<tr><td class="num">154</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MetaobjectThumbnail" target="_blank">MetaobjectThumbnail</a></td></tr>
+<tr><td class="num">155</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MoneyBag" target="_blank">MoneyBag</a></td></tr>
+<tr><td class="num">156</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MoneyV2" target="_blank">MoneyV2</a></td></tr>
+<tr><td class="num">157</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Mutation" target="_blank">Mutation</a></td></tr>
+<tr><td class="num">158</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MutationsStagedUploadTargetGenerateUploadParameter" target="_blank">MutationsStagedUploadTargetGenerateUploadParameter</a></td></tr>
+<tr><td class="num">159</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/OrderPaymentStatus" target="_blank">OrderPaymentStatus</a></td></tr>
+<tr><td class="num">160</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PageInfo" target="_blank">PageInfo</a></td></tr>
+<tr><td class="num">161</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PaymentCustomization" target="_blank">PaymentCustomization</a></td></tr>
+<tr><td class="num">162</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PaymentCustomizationError" target="_blank">PaymentCustomizationError</a></td></tr>
+<tr><td class="num">163</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PaymentMandate" target="_blank">PaymentMandate</a></td></tr>
+<tr><td class="num">164</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PaymentMandateResource" target="_blank">PaymentMandateResource</a></td></tr>
+<tr><td class="num">165</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PaymentSchedule" target="_blank">PaymentSchedule</a></td></tr>
+<tr><td class="num">166</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PaymentTerms" target="_blank">PaymentTerms</a></td></tr>
+<tr><td class="num">167</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PaymentTermsTemplate" target="_blank">PaymentTermsTemplate</a></td></tr>
+<tr><td class="num">168</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductFeed" target="_blank">ProductFeed</a></td></tr>
+<tr><td class="num">169</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductResourceFeedback" target="_blank">ProductResourceFeedback</a></td></tr>
+<tr><td class="num">170</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/QueryRoot" target="_blank">QueryRoot</a></td></tr>
+<tr><td class="num">171</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SavedSearch" target="_blank">SavedSearch</a></td></tr>
+<tr><td class="num">172</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SearchFilter" target="_blank">SearchFilter</a></td></tr>
+<tr><td class="num">173</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SearchFilterOptions" target="_blank">SearchFilterOptions</a></td></tr>
+<tr><td class="num">174</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SearchResult" target="_blank">SearchResult</a></td></tr>
+<tr><td class="num">175</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopifyFunction" target="_blank">ShopifyFunction</a></td></tr>
+<tr><td class="num">176</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopPayPaymentRequest" target="_blank">ShopPayPaymentRequest</a></td></tr>
+<tr><td class="num">177</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopPayPaymentRequestContactField" target="_blank">ShopPayPaymentRequestContactField</a></td></tr>
+<tr><td class="num">178</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopPayPaymentRequestDiscount" target="_blank">ShopPayPaymentRequestDiscount</a></td></tr>
+<tr><td class="num">179</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopPayPaymentRequestImage" target="_blank">ShopPayPaymentRequestImage</a></td></tr>
+<tr><td class="num">180</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopPayPaymentRequestLineItem" target="_blank">ShopPayPaymentRequestLineItem</a></td></tr>
+<tr><td class="num">181</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopPayPaymentRequestReceipt" target="_blank">ShopPayPaymentRequestReceipt</a></td></tr>
+<tr><td class="num">182</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopPayPaymentRequestReceiptProcessingStatus" target="_blank">ShopPayPaymentRequestReceiptProcessingStatus</a></td></tr>
+<tr><td class="num">183</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopPayPaymentRequestShippingLine" target="_blank">ShopPayPaymentRequestShippingLine</a></td></tr>
+<tr><td class="num">184</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopPayPaymentRequestTotalShippingPrice" target="_blank">ShopPayPaymentRequestTotalShippingPrice</a></td></tr>
+<tr><td class="num">185</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/StaffMember" target="_blank">StaffMember</a></td></tr>
+<tr><td class="num">186</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/StaffMemberPrivateData" target="_blank">StaffMemberPrivateData</a></td></tr>
+<tr><td class="num">187</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/StagedUploadParameter" target="_blank">StagedUploadParameter</a></td></tr>
+<tr><td class="num">188</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/StagedUploadTarget" target="_blank">StagedUploadTarget</a></td></tr>
+<tr><td class="num">189</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/StandardMetaobjectCapabilityTemplate" target="_blank">StandardMetaobjectCapabilityTemplate</a></td></tr>
+<tr><td class="num">190</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/StandardMetaobjectDefinitionFieldTemplate" target="_blank">StandardMetaobjectDefinitionFieldTemplate</a></td></tr>
+<tr><td class="num">191</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/StandardMetaobjectDefinitionTemplate" target="_blank">StandardMetaobjectDefinitionTemplate</a></td></tr>
+<tr><td class="num">192</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/StoreCreditAccount" target="_blank">StoreCreditAccount</a></td></tr>
+<tr><td class="num">193</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/StoreCreditAccountCreditTransaction" target="_blank">StoreCreditAccountCreditTransaction</a></td></tr>
+<tr><td class="num">194</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/StoreCreditAccountDebitRevertTransaction" target="_blank">StoreCreditAccountDebitRevertTransaction</a></td></tr>
+<tr><td class="num">195</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/StoreCreditAccountDebitTransaction" target="_blank">StoreCreditAccountDebitTransaction</a></td></tr>
+<tr><td class="num">196</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/StoreCreditAccountExpirationTransaction" target="_blank">StoreCreditAccountExpirationTransaction</a></td></tr>
+<tr><td class="num">197</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/StoreCreditConfiguration" target="_blank">StoreCreditConfiguration</a></td></tr>
+<tr><td class="num">198</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Validation" target="_blank">Validation</a></td></tr>
+<tr><td class="num">199</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/VaultCreditCard" target="_blank">VaultCreditCard</a></td></tr>
+<tr><td class="num">200</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/VaultPaypalBillingAgreement" target="_blank">VaultPaypalBillingAgreement</a></td></tr>
+<tr><td class="num">201</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/WebhookSubscriptionMetafieldIdentifier" target="_blank">WebhookSubscriptionMetafieldIdentifier</a></td></tr>
+</tbody>
+  </table>
+  <a class="back" href="#top">▲ トップへ戻る</a>
+</section>
+
+<section id="customers">
+  <h2>Customers <span class="col-count">(36 objects)</span></h2>
+  <table>
+    <thead><tr><th>#</th><th>オブジェクト名</th></tr></thead>
+    <tbody><tr><td class="num">1</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Customer" target="_blank">Customer</a></td></tr>
+<tr><td class="num">2</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CustomerAccountsV2" target="_blank">CustomerAccountsV2</a></td></tr>
+<tr><td class="num">3</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CustomerCreditCardBillingAddress" target="_blank">CustomerCreditCardBillingAddress</a></td></tr>
+<tr><td class="num">4</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CustomerEmailAddress" target="_blank">CustomerEmailAddress</a></td></tr>
+<tr><td class="num">5</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CustomerEmailMarketingConsentState" target="_blank">CustomerEmailMarketingConsentState</a></td></tr>
+<tr><td class="num">6</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CustomerMergeable" target="_blank">CustomerMergeable</a></td></tr>
+<tr><td class="num">7</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CustomerMergeError" target="_blank">CustomerMergeError</a></td></tr>
+<tr><td class="num">8</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CustomerMergePreview" target="_blank">CustomerMergePreview</a></td></tr>
+<tr><td class="num">9</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CustomerMergePreviewAlternateFields" target="_blank">CustomerMergePreviewAlternateFields</a></td></tr>
+<tr><td class="num">10</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CustomerMergePreviewBlockingFields" target="_blank">CustomerMergePreviewBlockingFields</a></td></tr>
+<tr><td class="num">11</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CustomerMergePreviewDefaultFields" target="_blank">CustomerMergePreviewDefaultFields</a></td></tr>
+<tr><td class="num">12</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CustomerMergeRequest" target="_blank">CustomerMergeRequest</a></td></tr>
+<tr><td class="num">13</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CustomerPhoneNumber" target="_blank">CustomerPhoneNumber</a></td></tr>
+<tr><td class="num">14</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CustomerSegmentMember" target="_blank">CustomerSegmentMember</a></td></tr>
+<tr><td class="num">15</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CustomerSegmentMembersQuery" target="_blank">CustomerSegmentMembersQuery</a></td></tr>
+<tr><td class="num">16</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CustomerSmsMarketingConsentError" target="_blank">CustomerSmsMarketingConsentError</a></td></tr>
+<tr><td class="num">17</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CustomerSmsMarketingConsentState" target="_blank">CustomerSmsMarketingConsentState</a></td></tr>
+<tr><td class="num">18</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CustomerStatistics" target="_blank">CustomerStatistics</a></td></tr>
+<tr><td class="num">19</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MarketPriceInclusions" target="_blank">MarketPriceInclusions</a></td></tr>
+<tr><td class="num">20</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment" target="_blank">Segment</a></td></tr>
+<tr><td class="num">21</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SegmentAssociationFilter" target="_blank">SegmentAssociationFilter</a></td></tr>
+<tr><td class="num">22</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SegmentAttributeStatistics" target="_blank">SegmentAttributeStatistics</a></td></tr>
+<tr><td class="num">23</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SegmentBooleanFilter" target="_blank">SegmentBooleanFilter</a></td></tr>
+<tr><td class="num">24</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SegmentDateFilter" target="_blank">SegmentDateFilter</a></td></tr>
+<tr><td class="num">25</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SegmentEnumFilter" target="_blank">SegmentEnumFilter</a></td></tr>
+<tr><td class="num">26</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SegmentEventFilter" target="_blank">SegmentEventFilter</a></td></tr>
+<tr><td class="num">27</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SegmentEventFilterParameter" target="_blank">SegmentEventFilterParameter</a></td></tr>
+<tr><td class="num">28</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SegmentFloatFilter" target="_blank">SegmentFloatFilter</a></td></tr>
+<tr><td class="num">29</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SegmentIntegerFilter" target="_blank">SegmentIntegerFilter</a></td></tr>
+<tr><td class="num">30</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SegmentMembership" target="_blank">SegmentMembership</a></td></tr>
+<tr><td class="num">31</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SegmentMembershipResponse" target="_blank">SegmentMembershipResponse</a></td></tr>
+<tr><td class="num">32</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SegmentMigration" target="_blank">SegmentMigration</a></td></tr>
+<tr><td class="num">33</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SegmentStatistics" target="_blank">SegmentStatistics</a></td></tr>
+<tr><td class="num">34</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SegmentStringFilter" target="_blank">SegmentStringFilter</a></td></tr>
+<tr><td class="num">35</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SegmentValue" target="_blank">SegmentValue</a></td></tr>
+<tr><td class="num">36</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/TaxAppConfiguration" target="_blank">TaxAppConfiguration</a></td></tr>
+</tbody>
+  </table>
+  <a class="back" href="#top">▲ トップへ戻る</a>
+</section>
+
+<section id="discounts-and-marketing">
+  <h2>Discounts and marketing <span class="col-count">(63 objects)</span></h2>
+  <table>
+    <thead><tr><th>#</th><th>オブジェクト名</th></tr></thead>
+    <tbody><tr><td class="num">1</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Abandonment" target="_blank">Abandonment</a></td></tr>
+<tr><td class="num">2</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/AllDiscountItems" target="_blank">AllDiscountItems</a></td></tr>
+<tr><td class="num">3</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/AppDiscountType" target="_blank">AppDiscountType</a></td></tr>
+<tr><td class="num">4</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CustomerJourney" target="_blank">CustomerJourney</a></td></tr>
+<tr><td class="num">5</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CustomerJourneySummary" target="_blank">CustomerJourneySummary</a></td></tr>
+<tr><td class="num">6</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CustomerVisit" target="_blank">CustomerVisit</a></td></tr>
+<tr><td class="num">7</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CustomerVisitProductInfo" target="_blank">CustomerVisitProductInfo</a></td></tr>
+<tr><td class="num">8</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountAmount" target="_blank">DiscountAmount</a></td></tr>
+<tr><td class="num">9</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountAutomaticApp" target="_blank">DiscountAutomaticApp</a></td></tr>
+<tr><td class="num">10</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountAutomaticBasic" target="_blank">DiscountAutomaticBasic</a></td></tr>
+<tr><td class="num">11</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountAutomaticBxgy" target="_blank">DiscountAutomaticBxgy</a></td></tr>
+<tr><td class="num">12</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountAutomaticFreeShipping" target="_blank">DiscountAutomaticFreeShipping</a></td></tr>
+<tr><td class="num">13</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountAutomaticNode" target="_blank">DiscountAutomaticNode</a></td></tr>
+<tr><td class="num">14</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountBuyerSelectionAll" target="_blank">DiscountBuyerSelectionAll</a></td></tr>
+<tr><td class="num">15</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCodeApp" target="_blank">DiscountCodeApp</a></td></tr>
+<tr><td class="num">16</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCodeBasic" target="_blank">DiscountCodeBasic</a></td></tr>
+<tr><td class="num">17</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCodeBxgy" target="_blank">DiscountCodeBxgy</a></td></tr>
+<tr><td class="num">18</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCodeFreeShipping" target="_blank">DiscountCodeFreeShipping</a></td></tr>
+<tr><td class="num">19</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCodeNode" target="_blank">DiscountCodeNode</a></td></tr>
+<tr><td class="num">20</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCollections" target="_blank">DiscountCollections</a></td></tr>
+<tr><td class="num">21</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCombinesWith" target="_blank">DiscountCombinesWith</a></td></tr>
+<tr><td class="num">22</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCountries" target="_blank">DiscountCountries</a></td></tr>
+<tr><td class="num">23</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCountryAll" target="_blank">DiscountCountryAll</a></td></tr>
+<tr><td class="num">24</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCustomerAll" target="_blank">DiscountCustomerAll</a></td></tr>
+<tr><td class="num">25</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCustomerBuys" target="_blank">DiscountCustomerBuys</a></td></tr>
+<tr><td class="num">26</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCustomerGets" target="_blank">DiscountCustomerGets</a></td></tr>
+<tr><td class="num">27</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCustomers" target="_blank">DiscountCustomers</a></td></tr>
+<tr><td class="num">28</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCustomerSegments" target="_blank">DiscountCustomerSegments</a></td></tr>
+<tr><td class="num">29</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountMinimumQuantity" target="_blank">DiscountMinimumQuantity</a></td></tr>
+<tr><td class="num">30</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountMinimumSubtotal" target="_blank">DiscountMinimumSubtotal</a></td></tr>
+<tr><td class="num">31</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountNode" target="_blank">DiscountNode</a></td></tr>
+<tr><td class="num">32</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountOnQuantity" target="_blank">DiscountOnQuantity</a></td></tr>
+<tr><td class="num">33</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountPercentage" target="_blank">DiscountPercentage</a></td></tr>
+<tr><td class="num">34</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountProducts" target="_blank">DiscountProducts</a></td></tr>
+<tr><td class="num">35</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountPurchaseAmount" target="_blank">DiscountPurchaseAmount</a></td></tr>
+<tr><td class="num">36</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountQuantity" target="_blank">DiscountQuantity</a></td></tr>
+<tr><td class="num">37</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountRedeemCode" target="_blank">DiscountRedeemCode</a></td></tr>
+<tr><td class="num">38</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountRedeemCodeBulkCreation" target="_blank">DiscountRedeemCodeBulkCreation</a></td></tr>
+<tr><td class="num">39</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountRedeemCodeBulkCreationCode" target="_blank">DiscountRedeemCodeBulkCreationCode</a></td></tr>
+<tr><td class="num">40</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountShareableUrl" target="_blank">DiscountShareableUrl</a></td></tr>
+<tr><td class="num">41</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MarketingActivity" target="_blank">MarketingActivity</a></td></tr>
+<tr><td class="num">42</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MarketingActivityExtensionAppErrors" target="_blank">MarketingActivityExtensionAppErrors</a></td></tr>
+<tr><td class="num">43</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MarketingBudget" target="_blank">MarketingBudget</a></td></tr>
+<tr><td class="num">44</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MarketingEngagement" target="_blank">MarketingEngagement</a></td></tr>
+<tr><td class="num">45</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MarketingEvent" target="_blank">MarketingEvent</a></td></tr>
+<tr><td class="num">46</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PriceRule" target="_blank">PriceRule</a></td></tr>
+<tr><td class="num">47</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PriceRuleCustomerSelection" target="_blank">PriceRuleCustomerSelection</a></td></tr>
+<tr><td class="num">48</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PriceRuleDiscountCode" target="_blank">PriceRuleDiscountCode</a></td></tr>
+<tr><td class="num">49</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PriceRuleEntitlementToPrerequisiteQuantityRatio" target="_blank">PriceRuleEntitlementToPrerequisiteQuantityRatio</a></td></tr>
+<tr><td class="num">50</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PriceRuleFixedAmountValue" target="_blank">PriceRuleFixedAmountValue</a></td></tr>
+<tr><td class="num">51</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PriceRuleItemEntitlements" target="_blank">PriceRuleItemEntitlements</a></td></tr>
+<tr><td class="num">52</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PriceRuleLineItemPrerequisites" target="_blank">PriceRuleLineItemPrerequisites</a></td></tr>
+<tr><td class="num">53</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PriceRuleMoneyRange" target="_blank">PriceRuleMoneyRange</a></td></tr>
+<tr><td class="num">54</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PriceRulePercentValue" target="_blank">PriceRulePercentValue</a></td></tr>
+<tr><td class="num">55</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PriceRulePrerequisiteToEntitlementQuantityRatio" target="_blank">PriceRulePrerequisiteToEntitlementQuantityRatio</a></td></tr>
+<tr><td class="num">56</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PriceRuleQuantityRange" target="_blank">PriceRuleQuantityRange</a></td></tr>
+<tr><td class="num">57</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PriceRuleShareableUrl" target="_blank">PriceRuleShareableUrl</a></td></tr>
+<tr><td class="num">58</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PriceRuleShippingLineEntitlements" target="_blank">PriceRuleShippingLineEntitlements</a></td></tr>
+<tr><td class="num">59</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PriceRuleValidityPeriod" target="_blank">PriceRuleValidityPeriod</a></td></tr>
+<tr><td class="num">60</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PricingPercentageValue" target="_blank">PricingPercentageValue</a></td></tr>
+<tr><td class="num">61</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ServerPixel" target="_blank">ServerPixel</a></td></tr>
+<tr><td class="num">62</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/UTMParameters" target="_blank">UTMParameters</a></td></tr>
+<tr><td class="num">63</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/WebPixel" target="_blank">WebPixel</a></td></tr>
+</tbody>
+  </table>
+  <a class="back" href="#top">▲ トップへ戻る</a>
+</section>
+
+<section id="events">
+  <h2>Events <span class="col-count">(8 objects)</span></h2>
+  <table>
+    <thead><tr><th>#</th><th>オブジェクト名</th></tr></thead>
+    <tbody><tr><td class="num">1</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/BasicEvent" target="_blank">BasicEvent</a></td></tr>
+<tr><td class="num">2</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CommentEvent" target="_blank">CommentEvent</a></td></tr>
+<tr><td class="num">3</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CommentEventAttachment" target="_blank">CommentEventAttachment</a></td></tr>
+<tr><td class="num">4</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DeletionEvent" target="_blank">DeletionEvent</a></td></tr>
+<tr><td class="num">5</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ResourceAlert" target="_blank">ResourceAlert</a></td></tr>
+<tr><td class="num">6</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ResourceAlertAction" target="_blank">ResourceAlertAction</a></td></tr>
+<tr><td class="num">7</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopAlert" target="_blank">ShopAlert</a></td></tr>
+<tr><td class="num">8</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopAlertAction" target="_blank">ShopAlertAction</a></td></tr>
+</tbody>
+  </table>
+  <a class="back" href="#top">▲ トップへ戻る</a>
+</section>
+
+<section id="inventory">
+  <h2>Inventory <span class="col-count">(16 objects)</span></h2>
+  <table>
+    <thead><tr><th>#</th><th>オブジェクト名</th></tr></thead>
+    <tbody><tr><td class="num">1</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CountryHarmonizedSystemCode" target="_blank">CountryHarmonizedSystemCode</a></td></tr>
+<tr><td class="num">2</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryAdjustmentGroup" target="_blank">InventoryAdjustmentGroup</a></td></tr>
+<tr><td class="num">3</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryChange" target="_blank">InventoryChange</a></td></tr>
+<tr><td class="num">4</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryItem" target="_blank">InventoryItem</a></td></tr>
+<tr><td class="num">5</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryItemMeasurement" target="_blank">InventoryItemMeasurement</a></td></tr>
+<tr><td class="num">6</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryLevel" target="_blank">InventoryLevel</a></td></tr>
+<tr><td class="num">7</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryProperties" target="_blank">InventoryProperties</a></td></tr>
+<tr><td class="num">8</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryQuantity" target="_blank">InventoryQuantity</a></td></tr>
+<tr><td class="num">9</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryQuantityName" target="_blank">InventoryQuantityName</a></td></tr>
+<tr><td class="num">10</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryScheduledChange" target="_blank">InventoryScheduledChange</a></td></tr>
+<tr><td class="num">11</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryShipment" target="_blank">InventoryShipment</a></td></tr>
+<tr><td class="num">12</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryShipmentLineItem" target="_blank">InventoryShipmentLineItem</a></td></tr>
+<tr><td class="num">13</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryShipmentTracking" target="_blank">InventoryShipmentTracking</a></td></tr>
+<tr><td class="num">14</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryTransfer" target="_blank">InventoryTransfer</a></td></tr>
+<tr><td class="num">15</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryTransferLineItem" target="_blank">InventoryTransferLineItem</a></td></tr>
+<tr><td class="num">16</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryTransferLineItemUpdate" target="_blank">InventoryTransferLineItemUpdate</a></td></tr>
+</tbody>
+  </table>
+  <a class="back" href="#top">▲ トップへ戻る</a>
+</section>
+
+<section id="localizations">
+  <h2>Localizations <span class="col-count">(9 objects)</span></h2>
+  <table>
+    <thead><tr><th>#</th><th>オブジェクト名</th></tr></thead>
+    <tbody><tr><td class="num">1</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Locale" target="_blank">Locale</a></td></tr>
+<tr><td class="num">2</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/LocalizationExtension" target="_blank">LocalizationExtension</a></td></tr>
+<tr><td class="num">3</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MarketLocalizableContent" target="_blank">MarketLocalizableContent</a></td></tr>
+<tr><td class="num">4</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MarketLocalizableResource" target="_blank">MarketLocalizableResource</a></td></tr>
+<tr><td class="num">5</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MarketLocalization" target="_blank">MarketLocalization</a></td></tr>
+<tr><td class="num">6</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopLocale" target="_blank">ShopLocale</a></td></tr>
+<tr><td class="num">7</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/TranslatableContent" target="_blank">TranslatableContent</a></td></tr>
+<tr><td class="num">8</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/TranslatableResource" target="_blank">TranslatableResource</a></td></tr>
+<tr><td class="num">9</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Translation" target="_blank">Translation</a></td></tr>
+</tbody>
+  </table>
+  <a class="back" href="#top">▲ トップへ戻る</a>
+</section>
+
+<section id="metafields">
+  <h2>Metafields <span class="col-count">(6 objects)</span></h2>
+  <table>
+    <thead><tr><th>#</th><th>オブジェクト名</th></tr></thead>
+    <tbody><tr><td class="num">1</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Metafield" target="_blank">Metafield</a></td></tr>
+<tr><td class="num">2</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MetafieldDefinition" target="_blank">MetafieldDefinition</a></td></tr>
+<tr><td class="num">3</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MetafieldDefinitionSupportedValidation" target="_blank">MetafieldDefinitionSupportedValidation</a></td></tr>
+<tr><td class="num">4</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MetafieldDefinitionType" target="_blank">MetafieldDefinitionType</a></td></tr>
+<tr><td class="num">5</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MetafieldDefinitionValidation" target="_blank">MetafieldDefinitionValidation</a></td></tr>
+<tr><td class="num">6</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/StandardMetafieldDefinitionTemplate" target="_blank">StandardMetafieldDefinitionTemplate</a></td></tr>
+</tbody>
+  </table>
+  <a class="back" href="#top">▲ トップへ戻る</a>
+</section>
+
+<section id="metaobjects">
+  <h2>Metaobjects <span class="col-count">(15 objects)</span></h2>
+  <table>
+    <thead><tr><th>#</th><th>オブジェクト名</th></tr></thead>
+    <tbody><tr><td class="num">1</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Metaobject" target="_blank">Metaobject</a></td></tr>
+<tr><td class="num">2</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MetaobjectAccess" target="_blank">MetaobjectAccess</a></td></tr>
+<tr><td class="num">3</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MetaobjectCapabilities" target="_blank">MetaobjectCapabilities</a></td></tr>
+<tr><td class="num">4</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MetaobjectCapabilitiesOnlineStore" target="_blank">MetaobjectCapabilitiesOnlineStore</a></td></tr>
+<tr><td class="num">5</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MetaobjectCapabilitiesPublishable" target="_blank">MetaobjectCapabilitiesPublishable</a></td></tr>
+<tr><td class="num">6</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MetaobjectCapabilitiesRenderable" target="_blank">MetaobjectCapabilitiesRenderable</a></td></tr>
+<tr><td class="num">7</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MetaobjectCapabilitiesTranslatable" target="_blank">MetaobjectCapabilitiesTranslatable</a></td></tr>
+<tr><td class="num">8</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MetaobjectCapabilityData" target="_blank">MetaobjectCapabilityData</a></td></tr>
+<tr><td class="num">9</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MetaobjectCapabilityDataOnlineStore" target="_blank">MetaobjectCapabilityDataOnlineStore</a></td></tr>
+<tr><td class="num">10</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MetaobjectCapabilityDataPublishable" target="_blank">MetaobjectCapabilityDataPublishable</a></td></tr>
+<tr><td class="num">11</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MetaobjectCapabilityDefinitionDataOnlineStore" target="_blank">MetaobjectCapabilityDefinitionDataOnlineStore</a></td></tr>
+<tr><td class="num">12</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MetaobjectCapabilityDefinitionDataRenderable" target="_blank">MetaobjectCapabilityDefinitionDataRenderable</a></td></tr>
+<tr><td class="num">13</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MetaobjectDefinition" target="_blank">MetaobjectDefinition</a></td></tr>
+<tr><td class="num">14</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MetaobjectField" target="_blank">MetaobjectField</a></td></tr>
+<tr><td class="num">15</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MetaobjectFieldDefinition" target="_blank">MetaobjectFieldDefinition</a></td></tr>
+</tbody>
+  </table>
+  <a class="back" href="#top">▲ トップへ戻る</a>
+</section>
+
+<section id="online-store">
+  <h2>Online store <span class="col-count">(27 objects)</span></h2>
+  <table>
+    <thead><tr><th>#</th><th>オブジェクト名</th></tr></thead>
+    <tbody><tr><td class="num">1</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Article" target="_blank">Article</a></td></tr>
+<tr><td class="num">2</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ArticleAuthor" target="_blank">ArticleAuthor</a></td></tr>
+<tr><td class="num">3</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Blog" target="_blank">Blog</a></td></tr>
+<tr><td class="num">4</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/BlogFeed" target="_blank">BlogFeed</a></td></tr>
+<tr><td class="num">5</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Comment" target="_blank">Comment</a></td></tr>
+<tr><td class="num">6</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CommentAuthor" target="_blank">CommentAuthor</a></td></tr>
+<tr><td class="num">7</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CustomerAccountAppExtensionPage" target="_blank">CustomerAccountAppExtensionPage</a></td></tr>
+<tr><td class="num">8</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CustomerAccountNativePage" target="_blank">CustomerAccountNativePage</a></td></tr>
+<tr><td class="num">9</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MarketsThemesEntitlement" target="_blank">MarketsThemesEntitlement</a></td></tr>
+<tr><td class="num">10</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Menu" target="_blank">Menu</a></td></tr>
+<tr><td class="num">11</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MenuItem" target="_blank">MenuItem</a></td></tr>
+<tr><td class="num">12</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/OnlineStore" target="_blank">OnlineStore</a></td></tr>
+<tr><td class="num">13</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/OnlineStorePasswordProtection" target="_blank">OnlineStorePasswordProtection</a></td></tr>
+<tr><td class="num">14</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/OnlineStoreTheme" target="_blank">OnlineStoreTheme</a></td></tr>
+<tr><td class="num">15</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/OnlineStoreThemeFile" target="_blank">OnlineStoreThemeFile</a></td></tr>
+<tr><td class="num">16</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/OnlineStoreThemeFileBodyBase64" target="_blank">OnlineStoreThemeFileBodyBase64</a></td></tr>
+<tr><td class="num">17</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/OnlineStoreThemeFileBodyText" target="_blank">OnlineStoreThemeFileBodyText</a></td></tr>
+<tr><td class="num">18</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/OnlineStoreThemeFileBodyUrl" target="_blank">OnlineStoreThemeFileBodyUrl</a></td></tr>
+<tr><td class="num">19</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/OnlineStoreThemeFileOperationResult" target="_blank">OnlineStoreThemeFileOperationResult</a></td></tr>
+<tr><td class="num">20</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/OnlineStoreThemeFileReadResult" target="_blank">OnlineStoreThemeFileReadResult</a></td></tr>
+<tr><td class="num">21</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/OnlineStoreThemeFilesUserErrors" target="_blank">OnlineStoreThemeFilesUserErrors</a></td></tr>
+<tr><td class="num">22</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Page" target="_blank">Page</a></td></tr>
+<tr><td class="num">23</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ScriptTag" target="_blank">ScriptTag</a></td></tr>
+<tr><td class="num">24</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SEO" target="_blank">SEO</a></td></tr>
+<tr><td class="num">25</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/UrlRedirect" target="_blank">UrlRedirect</a></td></tr>
+<tr><td class="num">26</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/UrlRedirectImport" target="_blank">UrlRedirectImport</a></td></tr>
+<tr><td class="num">27</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/UrlRedirectImportPreview" target="_blank">UrlRedirectImportPreview</a></td></tr>
+</tbody>
+  </table>
+  <a class="back" href="#top">▲ トップへ戻る</a>
+</section>
+
+<section id="orders">
+  <h2>Orders <span class="col-count">(165 objects)</span></h2>
+  <table>
+    <thead><tr><th>#</th><th>オブジェクト名</th></tr></thead>
+    <tbody><tr><td class="num">1</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/AdditionalFee" target="_blank">AdditionalFee</a></td></tr>
+<tr><td class="num">2</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/AdditionalFeeSale" target="_blank">AdditionalFeeSale</a></td></tr>
+<tr><td class="num">3</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/AdjustmentSale" target="_blank">AdjustmentSale</a></td></tr>
+<tr><td class="num">4</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Attribute" target="_blank">Attribute</a></td></tr>
+<tr><td class="num">5</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/AutomaticDiscountApplication" target="_blank">AutomaticDiscountApplication</a></td></tr>
+<tr><td class="num">6</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CalculatedAutomaticDiscountApplication" target="_blank">CalculatedAutomaticDiscountApplication</a></td></tr>
+<tr><td class="num">7</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CalculatedDiscountAllocation" target="_blank">CalculatedDiscountAllocation</a></td></tr>
+<tr><td class="num">8</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CalculatedDiscountCodeApplication" target="_blank">CalculatedDiscountCodeApplication</a></td></tr>
+<tr><td class="num">9</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CalculatedDraftOrder" target="_blank">CalculatedDraftOrder</a></td></tr>
+<tr><td class="num">10</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CalculatedDraftOrderLineItem" target="_blank">CalculatedDraftOrderLineItem</a></td></tr>
+<tr><td class="num">11</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CalculatedExchangeLineItem" target="_blank">CalculatedExchangeLineItem</a></td></tr>
+<tr><td class="num">12</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CalculatedLineItem" target="_blank">CalculatedLineItem</a></td></tr>
+<tr><td class="num">13</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CalculatedManualDiscountApplication" target="_blank">CalculatedManualDiscountApplication</a></td></tr>
+<tr><td class="num">14</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CalculatedOrder" target="_blank">CalculatedOrder</a></td></tr>
+<tr><td class="num">15</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CalculatedRestockingFee" target="_blank">CalculatedRestockingFee</a></td></tr>
+<tr><td class="num">16</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CalculatedReturn" target="_blank">CalculatedReturn</a></td></tr>
+<tr><td class="num">17</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CalculatedReturnLineItem" target="_blank">CalculatedReturnLineItem</a></td></tr>
+<tr><td class="num">18</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CalculatedReturnShippingFee" target="_blank">CalculatedReturnShippingFee</a></td></tr>
+<tr><td class="num">19</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CalculatedScriptDiscountApplication" target="_blank">CalculatedScriptDiscountApplication</a></td></tr>
+<tr><td class="num">20</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CalculatedShippingLine" target="_blank">CalculatedShippingLine</a></td></tr>
+<tr><td class="num">21</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CardPaymentDetails" target="_blank">CardPaymentDetails</a></td></tr>
+<tr><td class="num">22</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CashRoundingAdjustment" target="_blank">CashRoundingAdjustment</a></td></tr>
+<tr><td class="num">23</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CurrencyExchangeAdjustment" target="_blank">CurrencyExchangeAdjustment</a></td></tr>
+<tr><td class="num">24</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CurrencySetting" target="_blank">CurrencySetting</a></td></tr>
+<tr><td class="num">25</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountAllocation" target="_blank">DiscountAllocation</a></td></tr>
+<tr><td class="num">26</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCodeApplication" target="_blank">DiscountCodeApplication</a></td></tr>
+<tr><td class="num">27</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DraftOrder" target="_blank">DraftOrder</a></td></tr>
+<tr><td class="num">28</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DraftOrderAppliedDiscount" target="_blank">DraftOrderAppliedDiscount</a></td></tr>
+<tr><td class="num">29</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DraftOrderAvailableDeliveryOptions" target="_blank">DraftOrderAvailableDeliveryOptions</a></td></tr>
+<tr><td class="num">30</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DraftOrderBundleAddedWarning" target="_blank">DraftOrderBundleAddedWarning</a></td></tr>
+<tr><td class="num">31</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DraftOrderDiscountNotAppliedWarning" target="_blank">DraftOrderDiscountNotAppliedWarning</a></td></tr>
+<tr><td class="num">32</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DraftOrderLineItem" target="_blank">DraftOrderLineItem</a></td></tr>
+<tr><td class="num">33</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DraftOrderMarketRegionCountryCodeNotSupportedWarning" target="_blank">DraftOrderMarketRegionCountryCodeNotSupportedWarning</a></td></tr>
+<tr><td class="num">34</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DraftOrderPlatformDiscount" target="_blank">DraftOrderPlatformDiscount</a></td></tr>
+<tr><td class="num">35</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DraftOrderPlatformDiscountAllocation" target="_blank">DraftOrderPlatformDiscountAllocation</a></td></tr>
+<tr><td class="num">36</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DraftOrderShippingRate" target="_blank">DraftOrderShippingRate</a></td></tr>
+<tr><td class="num">37</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DraftOrderTag" target="_blank">DraftOrderTag</a></td></tr>
+<tr><td class="num">38</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Duty" target="_blank">Duty</a></td></tr>
+<tr><td class="num">39</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DutySale" target="_blank">DutySale</a></td></tr>
+<tr><td class="num">40</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ExchangeLineItem" target="_blank">ExchangeLineItem</a></td></tr>
+<tr><td class="num">41</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/FeeSale" target="_blank">FeeSale</a></td></tr>
+<tr><td class="num">42</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/GiftCardSale" target="_blank">GiftCardSale</a></td></tr>
+<tr><td class="num">43</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/InvoiceReturnOutcome" target="_blank">InvoiceReturnOutcome</a></td></tr>
+<tr><td class="num">44</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/LineItem" target="_blank">LineItem</a></td></tr>
+<tr><td class="num">45</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/LineItemGroup" target="_blank">LineItemGroup</a></td></tr>
+<tr><td class="num">46</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/LineItemSellingPlan" target="_blank">LineItemSellingPlan</a></td></tr>
+<tr><td class="num">47</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/LocalPaymentMethodsPaymentDetails" target="_blank">LocalPaymentMethodsPaymentDetails</a></td></tr>
+<tr><td class="num">48</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ManualDiscountApplication" target="_blank">ManualDiscountApplication</a></td></tr>
+<tr><td class="num">49</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MetafieldCapabilityCartToOrderCopyable" target="_blank">MetafieldCapabilityCartToOrderCopyable</a></td></tr>
+<tr><td class="num">50</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Order" target="_blank">Order</a></td></tr>
+<tr><td class="num">51</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/OrderAdjustment" target="_blank">OrderAdjustment</a></td></tr>
+<tr><td class="num">52</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/OrderAgreement" target="_blank">OrderAgreement</a></td></tr>
+<tr><td class="num">53</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/OrderApp" target="_blank">OrderApp</a></td></tr>
+<tr><td class="num">54</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/OrderCancellation" target="_blank">OrderCancellation</a></td></tr>
+<tr><td class="num">55</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/OrderCreateManualPaymentOrderCreateManualPaymentError" target="_blank">OrderCreateManualPaymentOrderCreateManualPaymentError</a></td></tr>
+<tr><td class="num">56</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/OrderEditAgreement" target="_blank">OrderEditAgreement</a></td></tr>
+<tr><td class="num">57</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/OrderEditSession" target="_blank">OrderEditSession</a></td></tr>
+<tr><td class="num">58</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/OrderPaymentCollectionDetails" target="_blank">OrderPaymentCollectionDetails</a></td></tr>
+<tr><td class="num">59</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/OrderRisk" target="_blank">OrderRisk</a></td></tr>
+<tr><td class="num">60</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/OrderRiskAssessment" target="_blank">OrderRiskAssessment</a></td></tr>
+<tr><td class="num">61</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/OrderRiskSummary" target="_blank">OrderRiskSummary</a></td></tr>
+<tr><td class="num">62</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/OrderStagedChangeAddCustomItem" target="_blank">OrderStagedChangeAddCustomItem</a></td></tr>
+<tr><td class="num">63</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/OrderStagedChangeAddLineItemDiscount" target="_blank">OrderStagedChangeAddLineItemDiscount</a></td></tr>
+<tr><td class="num">64</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/OrderStagedChangeAddShippingLine" target="_blank">OrderStagedChangeAddShippingLine</a></td></tr>
+<tr><td class="num">65</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/OrderStagedChangeAddVariant" target="_blank">OrderStagedChangeAddVariant</a></td></tr>
+<tr><td class="num">66</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/OrderStagedChangeDecrementItem" target="_blank">OrderStagedChangeDecrementItem</a></td></tr>
+<tr><td class="num">67</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/OrderStagedChangeIncrementItem" target="_blank">OrderStagedChangeIncrementItem</a></td></tr>
+<tr><td class="num">68</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/OrderStagedChangeRemoveDiscount" target="_blank">OrderStagedChangeRemoveDiscount</a></td></tr>
+<tr><td class="num">69</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/OrderStagedChangeRemoveShippingLine" target="_blank">OrderStagedChangeRemoveShippingLine</a></td></tr>
+<tr><td class="num">70</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/OrderTransaction" target="_blank">OrderTransaction</a></td></tr>
+<tr><td class="num">71</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PaymentSettings" target="_blank">PaymentSettings</a></td></tr>
+<tr><td class="num">72</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PaypalWalletPaymentDetails" target="_blank">PaypalWalletPaymentDetails</a></td></tr>
+<tr><td class="num">73</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PickupInStoreLocation" target="_blank">PickupInStoreLocation</a></td></tr>
+<tr><td class="num">74</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductSale" target="_blank">ProductSale</a></td></tr>
+<tr><td class="num">75</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Refund" target="_blank">Refund</a></td></tr>
+<tr><td class="num">76</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/RefundAgreement" target="_blank">RefundAgreement</a></td></tr>
+<tr><td class="num">77</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/RefundDuty" target="_blank">RefundDuty</a></td></tr>
+<tr><td class="num">78</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/RefundLineItem" target="_blank">RefundLineItem</a></td></tr>
+<tr><td class="num">79</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/RefundReturnOutcome" target="_blank">RefundReturnOutcome</a></td></tr>
+<tr><td class="num">80</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/RefundShippingLine" target="_blank">RefundShippingLine</a></td></tr>
+<tr><td class="num">81</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/RestockingFee" target="_blank">RestockingFee</a></td></tr>
+<tr><td class="num">82</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Return" target="_blank">Return</a></td></tr>
+<tr><td class="num">83</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ReturnableFulfillment" target="_blank">ReturnableFulfillment</a></td></tr>
+<tr><td class="num">84</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ReturnableFulfillmentLineItem" target="_blank">ReturnableFulfillmentLineItem</a></td></tr>
+<tr><td class="num">85</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ReturnAgreement" target="_blank">ReturnAgreement</a></td></tr>
+<tr><td class="num">86</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ReturnDecline" target="_blank">ReturnDecline</a></td></tr>
+<tr><td class="num">87</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ReturnLineItem" target="_blank">ReturnLineItem</a></td></tr>
+<tr><td class="num">88</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ReturnReasonDefinition" target="_blank">ReturnReasonDefinition</a></td></tr>
+<tr><td class="num">89</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ReturnShippingFee" target="_blank">ReturnShippingFee</a></td></tr>
+<tr><td class="num">90</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ReverseDelivery" target="_blank">ReverseDelivery</a></td></tr>
+<tr><td class="num">91</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ReverseDeliveryLabelV2" target="_blank">ReverseDeliveryLabelV2</a></td></tr>
+<tr><td class="num">92</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ReverseDeliveryLineItem" target="_blank">ReverseDeliveryLineItem</a></td></tr>
+<tr><td class="num">93</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ReverseDeliveryShippingDeliverable" target="_blank">ReverseDeliveryShippingDeliverable</a></td></tr>
+<tr><td class="num">94</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ReverseDeliveryTrackingV2" target="_blank">ReverseDeliveryTrackingV2</a></td></tr>
+<tr><td class="num">95</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ReverseFulfillmentOrder" target="_blank">ReverseFulfillmentOrder</a></td></tr>
+<tr><td class="num">96</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ReverseFulfillmentOrderDisposition" target="_blank">ReverseFulfillmentOrderDisposition</a></td></tr>
+<tr><td class="num">97</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ReverseFulfillmentOrderLineItem" target="_blank">ReverseFulfillmentOrderLineItem</a></td></tr>
+<tr><td class="num">98</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ReverseFulfillmentOrderThirdPartyConfirmation" target="_blank">ReverseFulfillmentOrderThirdPartyConfirmation</a></td></tr>
+<tr><td class="num">99</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/RiskFact" target="_blank">RiskFact</a></td></tr>
+<tr><td class="num">100</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SaleAdditionalFee" target="_blank">SaleAdditionalFee</a></td></tr>
+<tr><td class="num">101</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SaleTax" target="_blank">SaleTax</a></td></tr>
+<tr><td class="num">102</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ScriptDiscountApplication" target="_blank">ScriptDiscountApplication</a></td></tr>
+<tr><td class="num">103</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShippingLine" target="_blank">ShippingLine</a></td></tr>
+<tr><td class="num">104</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShippingLineSale" target="_blank">ShippingLineSale</a></td></tr>
+<tr><td class="num">105</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShippingRefund" target="_blank">ShippingRefund</a></td></tr>
+<tr><td class="num">106</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopifyPaymentsExtendedAuthorization" target="_blank">ShopifyPaymentsExtendedAuthorization</a></td></tr>
+<tr><td class="num">107</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopifyPaymentsRefundSet" target="_blank">ShopifyPaymentsRefundSet</a></td></tr>
+<tr><td class="num">108</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopifyPaymentsTransactionSet" target="_blank">ShopifyPaymentsTransactionSet</a></td></tr>
+<tr><td class="num">109</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopifyProtectOrderEligibility" target="_blank">ShopifyProtectOrderEligibility</a></td></tr>
+<tr><td class="num">110</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopifyProtectOrderSummary" target="_blank">ShopifyProtectOrderSummary</a></td></tr>
+<tr><td class="num">111</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopPayInstallmentsPaymentDetails" target="_blank">ShopPayInstallmentsPaymentDetails</a></td></tr>
+<tr><td class="num">112</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionAppliedCodeDiscount" target="_blank">SubscriptionAppliedCodeDiscount</a></td></tr>
+<tr><td class="num">113</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionBillingAttempt" target="_blank">SubscriptionBillingAttempt</a></td></tr>
+<tr><td class="num">114</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionBillingAttemptActionRequiredState" target="_blank">SubscriptionBillingAttemptActionRequiredState</a></td></tr>
+<tr><td class="num">115</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionBillingAttemptFailedState" target="_blank">SubscriptionBillingAttemptFailedState</a></td></tr>
+<tr><td class="num">116</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionBillingAttemptGeneralError" target="_blank">SubscriptionBillingAttemptGeneralError</a></td></tr>
+<tr><td class="num">117</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionBillingAttemptGenericError" target="_blank">SubscriptionBillingAttemptGenericError</a></td></tr>
+<tr><td class="num">118</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionBillingAttemptInsufficientStockProductVariantsError" target="_blank">SubscriptionBillingAttemptInsufficientStockProductVariantsError</a></td></tr>
+<tr><td class="num">119</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionBillingAttemptInventoryError" target="_blank">SubscriptionBillingAttemptInventoryError</a></td></tr>
+<tr><td class="num">120</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionBillingAttemptOutOfStockProductVariantsError" target="_blank">SubscriptionBillingAttemptOutOfStockProductVariantsError</a></td></tr>
+<tr><td class="num">121</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionBillingAttemptPaymentChallenge" target="_blank">SubscriptionBillingAttemptPaymentChallenge</a></td></tr>
+<tr><td class="num">122</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionBillingAttemptPaymentError" target="_blank">SubscriptionBillingAttemptPaymentError</a></td></tr>
+<tr><td class="num">123</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionBillingAttemptPendingState" target="_blank">SubscriptionBillingAttemptPendingState</a></td></tr>
+<tr><td class="num">124</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionBillingAttemptSuccessState" target="_blank">SubscriptionBillingAttemptSuccessState</a></td></tr>
+<tr><td class="num">125</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionBillingAttemptUnexpectedError" target="_blank">SubscriptionBillingAttemptUnexpectedError</a></td></tr>
+<tr><td class="num">126</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionBillingCycle" target="_blank">SubscriptionBillingCycle</a></td></tr>
+<tr><td class="num">127</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionBillingCycleEditedContract" target="_blank">SubscriptionBillingCycleEditedContract</a></td></tr>
+<tr><td class="num">128</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionBillingPolicy" target="_blank">SubscriptionBillingPolicy</a></td></tr>
+<tr><td class="num">129</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionContract" target="_blank">SubscriptionContract</a></td></tr>
+<tr><td class="num">130</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionCyclePriceAdjustment" target="_blank">SubscriptionCyclePriceAdjustment</a></td></tr>
+<tr><td class="num">131</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionDeliveryMethodLocalDelivery" target="_blank">SubscriptionDeliveryMethodLocalDelivery</a></td></tr>
+<tr><td class="num">132</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionDeliveryMethodLocalDeliveryOption" target="_blank">SubscriptionDeliveryMethodLocalDeliveryOption</a></td></tr>
+<tr><td class="num">133</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionDeliveryMethodPickup" target="_blank">SubscriptionDeliveryMethodPickup</a></td></tr>
+<tr><td class="num">134</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionDeliveryMethodPickupOption" target="_blank">SubscriptionDeliveryMethodPickupOption</a></td></tr>
+<tr><td class="num">135</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionDeliveryMethodShipping" target="_blank">SubscriptionDeliveryMethodShipping</a></td></tr>
+<tr><td class="num">136</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionDeliveryMethodShippingOption" target="_blank">SubscriptionDeliveryMethodShippingOption</a></td></tr>
+<tr><td class="num">137</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionDeliveryOptionResultFailure" target="_blank">SubscriptionDeliveryOptionResultFailure</a></td></tr>
+<tr><td class="num">138</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionDeliveryOptionResultSuccess" target="_blank">SubscriptionDeliveryOptionResultSuccess</a></td></tr>
+<tr><td class="num">139</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionDeliveryPolicy" target="_blank">SubscriptionDeliveryPolicy</a></td></tr>
+<tr><td class="num">140</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionDiscountAllocation" target="_blank">SubscriptionDiscountAllocation</a></td></tr>
+<tr><td class="num">141</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionDiscountEntitledLines" target="_blank">SubscriptionDiscountEntitledLines</a></td></tr>
+<tr><td class="num">142</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionDiscountFixedAmountValue" target="_blank">SubscriptionDiscountFixedAmountValue</a></td></tr>
+<tr><td class="num">143</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionDiscountPercentageValue" target="_blank">SubscriptionDiscountPercentageValue</a></td></tr>
+<tr><td class="num">144</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionDraft" target="_blank">SubscriptionDraft</a></td></tr>
+<tr><td class="num">145</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionLine" target="_blank">SubscriptionLine</a></td></tr>
+<tr><td class="num">146</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionLocalDeliveryOption" target="_blank">SubscriptionLocalDeliveryOption</a></td></tr>
+<tr><td class="num">147</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionManualDiscount" target="_blank">SubscriptionManualDiscount</a></td></tr>
+<tr><td class="num">148</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionPickupOption" target="_blank">SubscriptionPickupOption</a></td></tr>
+<tr><td class="num">149</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionPricingPolicy" target="_blank">SubscriptionPricingPolicy</a></td></tr>
+<tr><td class="num">150</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionShippingOption" target="_blank">SubscriptionShippingOption</a></td></tr>
+<tr><td class="num">151</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionShippingOptionResultFailure" target="_blank">SubscriptionShippingOptionResultFailure</a></td></tr>
+<tr><td class="num">152</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SubscriptionShippingOptionResultSuccess" target="_blank">SubscriptionShippingOptionResultSuccess</a></td></tr>
+<tr><td class="num">153</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SuggestedOrderTransaction" target="_blank">SuggestedOrderTransaction</a></td></tr>
+<tr><td class="num">154</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SuggestedRefund" target="_blank">SuggestedRefund</a></td></tr>
+<tr><td class="num">155</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SuggestedReturnFinancialOutcome" target="_blank">SuggestedReturnFinancialOutcome</a></td></tr>
+<tr><td class="num">156</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SuggestedReturnRefund" target="_blank">SuggestedReturnRefund</a></td></tr>
+<tr><td class="num">157</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SuggestedStoreCreditRefund" target="_blank">SuggestedStoreCreditRefund</a></td></tr>
+<tr><td class="num">158</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/TaxLine" target="_blank">TaxLine</a></td></tr>
+<tr><td class="num">159</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/TenderTransaction" target="_blank">TenderTransaction</a></td></tr>
+<tr><td class="num">160</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/TenderTransactionCreditCardDetails" target="_blank">TenderTransactionCreditCardDetails</a></td></tr>
+<tr><td class="num">161</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/TipSale" target="_blank">TipSale</a></td></tr>
+<tr><td class="num">162</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/TransactionFee" target="_blank">TransactionFee</a></td></tr>
+<tr><td class="num">163</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/TypedAttribute" target="_blank">TypedAttribute</a></td></tr>
+<tr><td class="num">164</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/UnknownSale" target="_blank">UnknownSale</a></td></tr>
+<tr><td class="num">165</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/UnverifiedReturnLineItem" target="_blank">UnverifiedReturnLineItem</a></td></tr>
+</tbody>
+  </table>
+  <a class="back" href="#top">▲ トップへ戻る</a>
+</section>
+
+<section id="privacy">
+  <h2>Privacy <span class="col-count">(7 objects)</span></h2>
+  <table>
+    <thead><tr><th>#</th><th>オブジェクト名</th></tr></thead>
+    <tbody><tr><td class="num">1</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ConsentPolicy" target="_blank">ConsentPolicy</a></td></tr>
+<tr><td class="num">2</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ConsentPolicyError" target="_blank">ConsentPolicyError</a></td></tr>
+<tr><td class="num">3</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ConsentPolicyRegion" target="_blank">ConsentPolicyRegion</a></td></tr>
+<tr><td class="num">4</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CookieBanner" target="_blank">CookieBanner</a></td></tr>
+<tr><td class="num">5</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DataSaleOptOutPage" target="_blank">DataSaleOptOutPage</a></td></tr>
+<tr><td class="num">6</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PrivacyPolicy" target="_blank">PrivacyPolicy</a></td></tr>
+<tr><td class="num">7</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PrivacySettings" target="_blank">PrivacySettings</a></td></tr>
+</tbody>
+  </table>
+  <a class="back" href="#top">▲ トップへ戻る</a>
+</section>
+
+<section id="products-and-collections">
+  <h2>Products and collections <span class="col-count">(101 objects)</span></h2>
+  <table>
+    <thead><tr><th>#</th><th>オブジェクト名</th></tr></thead>
+    <tbody><tr><td class="num">1</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/AddAllProductsOperation" target="_blank">AddAllProductsOperation</a></td></tr>
+<tr><td class="num">2</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/AppCatalog" target="_blank">AppCatalog</a></td></tr>
+<tr><td class="num">3</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/BundlesFeature" target="_blank">BundlesFeature</a></td></tr>
+<tr><td class="num">4</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CatalogCsvOperation" target="_blank">CatalogCsvOperation</a></td></tr>
+<tr><td class="num">5</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Collection" target="_blank">Collection</a></td></tr>
+<tr><td class="num">6</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CollectionDuplicateOperation" target="_blank">CollectionDuplicateOperation</a></td></tr>
+<tr><td class="num">7</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CollectionOperations" target="_blank">CollectionOperations</a></td></tr>
+<tr><td class="num">8</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CollectionPublication" target="_blank">CollectionPublication</a></td></tr>
+<tr><td class="num">9</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CollectionRule" target="_blank">CollectionRule</a></td></tr>
+<tr><td class="num">10</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CollectionRuleCategoryCondition" target="_blank">CollectionRuleCategoryCondition</a></td></tr>
+<tr><td class="num">11</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CollectionRuleConditions" target="_blank">CollectionRuleConditions</a></td></tr>
+<tr><td class="num">12</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CollectionRuleMetafieldCondition" target="_blank">CollectionRuleMetafieldCondition</a></td></tr>
+<tr><td class="num">13</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CollectionRuleProductCategoryCondition" target="_blank">CollectionRuleProductCategoryCondition</a></td></tr>
+<tr><td class="num">14</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CollectionRuleSet" target="_blank">CollectionRuleSet</a></td></tr>
+<tr><td class="num">15</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CollectionRuleTextCondition" target="_blank">CollectionRuleTextCondition</a></td></tr>
+<tr><td class="num">16</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CombinedListing" target="_blank">CombinedListing</a></td></tr>
+<tr><td class="num">17</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CombinedListingChild" target="_blank">CombinedListingChild</a></td></tr>
+<tr><td class="num">18</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CompanyLocationCatalog" target="_blank">CompanyLocationCatalog</a></td></tr>
+<tr><td class="num">19</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ComponentizedProductsBundleConsolidatedOption" target="_blank">ComponentizedProductsBundleConsolidatedOption</a></td></tr>
+<tr><td class="num">20</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ComponentizedProductsBundleConsolidatedOptionSelection" target="_blank">ComponentizedProductsBundleConsolidatedOptionSelection</a></td></tr>
+<tr><td class="num">21</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ComponentizedProductsBundleConsolidatedOptionSelectionComponent" target="_blank">ComponentizedProductsBundleConsolidatedOptionSelectionComponent</a></td></tr>
+<tr><td class="num">22</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ExternalVideo" target="_blank">ExternalVideo</a></td></tr>
+<tr><td class="num">23</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/FileError" target="_blank">FileError</a></td></tr>
+<tr><td class="num">24</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/GenericFile" target="_blank">GenericFile</a></td></tr>
+<tr><td class="num">25</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/LinkedMetafield" target="_blank">LinkedMetafield</a></td></tr>
+<tr><td class="num">26</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MarketCatalog" target="_blank">MarketCatalog</a></td></tr>
+<tr><td class="num">27</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MarketsCatalogsEntitlement" target="_blank">MarketsCatalogsEntitlement</a></td></tr>
+<tr><td class="num">28</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MediaError" target="_blank">MediaError</a></td></tr>
+<tr><td class="num">29</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MediaImage" target="_blank">MediaImage</a></td></tr>
+<tr><td class="num">30</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MediaImageOriginalSource" target="_blank">MediaImageOriginalSource</a></td></tr>
+<tr><td class="num">31</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MediaPreviewImage" target="_blank">MediaPreviewImage</a></td></tr>
+<tr><td class="num">32</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MediaWarning" target="_blank">MediaWarning</a></td></tr>
+<tr><td class="num">33</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MetafieldCapabilitySmartCollectionCondition" target="_blank">MetafieldCapabilitySmartCollectionCondition</a></td></tr>
+<tr><td class="num">34</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Model3d" target="_blank">Model3d</a></td></tr>
+<tr><td class="num">35</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Model3dBoundingBox" target="_blank">Model3dBoundingBox</a></td></tr>
+<tr><td class="num">36</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Model3dSource" target="_blank">Model3dSource</a></td></tr>
+<tr><td class="num">37</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PriceList" target="_blank">PriceList</a></td></tr>
+<tr><td class="num">38</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PriceListAdjustment" target="_blank">PriceListAdjustment</a></td></tr>
+<tr><td class="num">39</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PriceListAdjustmentSettings" target="_blank">PriceListAdjustmentSettings</a></td></tr>
+<tr><td class="num">40</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PriceListParent" target="_blank">PriceListParent</a></td></tr>
+<tr><td class="num">41</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PriceListPrice" target="_blank">PriceListPrice</a></td></tr>
+<tr><td class="num">42</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Product" target="_blank">Product</a></td></tr>
+<tr><td class="num">43</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductBundleComponent" target="_blank">ProductBundleComponent</a></td></tr>
+<tr><td class="num">44</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductBundleComponentOptionSelection" target="_blank">ProductBundleComponentOptionSelection</a></td></tr>
+<tr><td class="num">45</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductBundleComponentOptionSelectionValue" target="_blank">ProductBundleComponentOptionSelectionValue</a></td></tr>
+<tr><td class="num">46</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductBundleComponentQuantityOption" target="_blank">ProductBundleComponentQuantityOption</a></td></tr>
+<tr><td class="num">47</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductBundleComponentQuantityOptionValue" target="_blank">ProductBundleComponentQuantityOptionValue</a></td></tr>
+<tr><td class="num">48</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductBundleOperation" target="_blank">ProductBundleOperation</a></td></tr>
+<tr><td class="num">49</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductCategory" target="_blank">ProductCategory</a></td></tr>
+<tr><td class="num">50</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductCompareAtPriceRange" target="_blank">ProductCompareAtPriceRange</a></td></tr>
+<tr><td class="num">51</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductComponentType" target="_blank">ProductComponentType</a></td></tr>
+<tr><td class="num">52</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductContextualPricing" target="_blank">ProductContextualPricing</a></td></tr>
+<tr><td class="num">53</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductDeleteOperation" target="_blank">ProductDeleteOperation</a></td></tr>
+<tr><td class="num">54</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductDuplicateJob" target="_blank">ProductDuplicateJob</a></td></tr>
+<tr><td class="num">55</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductDuplicateOperation" target="_blank">ProductDuplicateOperation</a></td></tr>
+<tr><td class="num">56</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductOption" target="_blank">ProductOption</a></td></tr>
+<tr><td class="num">57</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductOptionValue" target="_blank">ProductOptionValue</a></td></tr>
+<tr><td class="num">58</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductOptionValueSwatch" target="_blank">ProductOptionValueSwatch</a></td></tr>
+<tr><td class="num">59</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductPriceRange" target="_blank">ProductPriceRange</a></td></tr>
+<tr><td class="num">60</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductPriceRangeV2" target="_blank">ProductPriceRangeV2</a></td></tr>
+<tr><td class="num">61</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductPublication" target="_blank">ProductPublication</a></td></tr>
+<tr><td class="num">62</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductSetOperation" target="_blank">ProductSetOperation</a></td></tr>
+<tr><td class="num">63</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductTaxonomyNode" target="_blank">ProductTaxonomyNode</a></td></tr>
+<tr><td class="num">64</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductVariant" target="_blank">ProductVariant</a></td></tr>
+<tr><td class="num">65</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductVariantComponent" target="_blank">ProductVariantComponent</a></td></tr>
+<tr><td class="num">66</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductVariantContextualPricing" target="_blank">ProductVariantContextualPricing</a></td></tr>
+<tr><td class="num">67</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductVariantPricePair" target="_blank">ProductVariantPricePair</a></td></tr>
+<tr><td class="num">68</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PublicationResourceOperation" target="_blank">PublicationResourceOperation</a></td></tr>
+<tr><td class="num">69</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/QuantityPriceBreak" target="_blank">QuantityPriceBreak</a></td></tr>
+<tr><td class="num">70</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/QuantityRule" target="_blank">QuantityRule</a></td></tr>
+<tr><td class="num">71</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ResourcePublication" target="_blank">ResourcePublication</a></td></tr>
+<tr><td class="num">72</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ResourcePublicationV2" target="_blank">ResourcePublicationV2</a></td></tr>
+<tr><td class="num">73</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/RestrictedForResource" target="_blank">RestrictedForResource</a></td></tr>
+<tr><td class="num">74</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/RowCount" target="_blank">RowCount</a></td></tr>
+<tr><td class="num">75</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SelectedOption" target="_blank">SelectedOption</a></td></tr>
+<tr><td class="num">76</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SellingPlan" target="_blank">SellingPlan</a></td></tr>
+<tr><td class="num">77</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SellingPlanAnchor" target="_blank">SellingPlanAnchor</a></td></tr>
+<tr><td class="num">78</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SellingPlanCheckoutCharge" target="_blank">SellingPlanCheckoutCharge</a></td></tr>
+<tr><td class="num">79</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SellingPlanCheckoutChargePercentageValue" target="_blank">SellingPlanCheckoutChargePercentageValue</a></td></tr>
+<tr><td class="num">80</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SellingPlanFixedBillingPolicy" target="_blank">SellingPlanFixedBillingPolicy</a></td></tr>
+<tr><td class="num">81</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SellingPlanFixedDeliveryPolicy" target="_blank">SellingPlanFixedDeliveryPolicy</a></td></tr>
+<tr><td class="num">82</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SellingPlanFixedPricingPolicy" target="_blank">SellingPlanFixedPricingPolicy</a></td></tr>
+<tr><td class="num">83</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SellingPlanGroup" target="_blank">SellingPlanGroup</a></td></tr>
+<tr><td class="num">84</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SellingPlanInventoryPolicy" target="_blank">SellingPlanInventoryPolicy</a></td></tr>
+<tr><td class="num">85</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SellingPlanPricingPolicyPercentageValue" target="_blank">SellingPlanPricingPolicyPercentageValue</a></td></tr>
+<tr><td class="num">86</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SellingPlanRecurringBillingPolicy" target="_blank">SellingPlanRecurringBillingPolicy</a></td></tr>
+<tr><td class="num">87</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SellingPlanRecurringDeliveryPolicy" target="_blank">SellingPlanRecurringDeliveryPolicy</a></td></tr>
+<tr><td class="num">88</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/SellingPlanRecurringPricingPolicy" target="_blank">SellingPlanRecurringPricingPolicy</a></td></tr>
+<tr><td class="num">89</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/StagedMediaUploadTarget" target="_blank">StagedMediaUploadTarget</a></td></tr>
+<tr><td class="num">90</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/StandardizedProductType" target="_blank">StandardizedProductType</a></td></tr>
+<tr><td class="num">91</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Taxonomy" target="_blank">Taxonomy</a></td></tr>
+<tr><td class="num">92</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/TaxonomyAttribute" target="_blank">TaxonomyAttribute</a></td></tr>
+<tr><td class="num">93</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/TaxonomyCategory" target="_blank">TaxonomyCategory</a></td></tr>
+<tr><td class="num">94</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/TaxonomyChoiceListAttribute" target="_blank">TaxonomyChoiceListAttribute</a></td></tr>
+<tr><td class="num">95</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/TaxonomyMeasurementAttribute" target="_blank">TaxonomyMeasurementAttribute</a></td></tr>
+<tr><td class="num">96</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/TaxonomyValue" target="_blank">TaxonomyValue</a></td></tr>
+<tr><td class="num">97</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/UnitPriceMeasurement" target="_blank">UnitPriceMeasurement</a></td></tr>
+<tr><td class="num">98</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Vector3" target="_blank">Vector3</a></td></tr>
+<tr><td class="num">99</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Video" target="_blank">Video</a></td></tr>
+<tr><td class="num">100</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/VideoSource" target="_blank">VideoSource</a></td></tr>
+<tr><td class="num">101</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Weight" target="_blank">Weight</a></td></tr>
+</tbody>
+  </table>
+  <a class="back" href="#top">▲ トップへ戻る</a>
+</section>
+
+<section id="retail">
+  <h2>Retail <span class="col-count">(12 objects)</span></h2>
+  <table>
+    <thead><tr><th>#</th><th>オブジェクト名</th></tr></thead>
+    <tbody><tr><td class="num">1</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CashAdjustmentActivity" target="_blank">CashAdjustmentActivity</a></td></tr>
+<tr><td class="num">2</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CashCountActivity" target="_blank">CashCountActivity</a></td></tr>
+<tr><td class="num">3</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CashDrawer" target="_blank">CashDrawer</a></td></tr>
+<tr><td class="num">4</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CashManagementCustomReasonCode" target="_blank">CashManagementCustomReasonCode</a></td></tr>
+<tr><td class="num">5</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CashManagementDefaultReasonCode" target="_blank">CashManagementDefaultReasonCode</a></td></tr>
+<tr><td class="num">6</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CashManagementSummary" target="_blank">CashManagementSummary</a></td></tr>
+<tr><td class="num">7</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CashManagementSystemReasonCode" target="_blank">CashManagementSystemReasonCode</a></td></tr>
+<tr><td class="num">8</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CashTrackingAdjustment" target="_blank">CashTrackingAdjustment</a></td></tr>
+<tr><td class="num">9</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CashTrackingSession" target="_blank">CashTrackingSession</a></td></tr>
+<tr><td class="num">10</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CashTransactionActivity" target="_blank">CashTransactionActivity</a></td></tr>
+<tr><td class="num">11</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PointOfSaleDevice" target="_blank">PointOfSaleDevice</a></td></tr>
+<tr><td class="num">12</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/PointOfSaleDevicePaymentSession" target="_blank">PointOfSaleDevicePaymentSession</a></td></tr>
+</tbody>
+  </table>
+  <a class="back" href="#top">▲ トップへ戻る</a>
+</section>
+
+<section id="shipping-and-fulfillment">
+  <h2>Shipping and fulfillment <span class="col-count">(56 objects)</span></h2>
+  <table>
+    <thead><tr><th>#</th><th>オブジェクト名</th></tr></thead>
+    <tbody><tr><td class="num">1</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CountriesInShippingZones" target="_blank">CountriesInShippingZones</a></td></tr>
+<tr><td class="num">2</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryAvailableService" target="_blank">DeliveryAvailableService</a></td></tr>
+<tr><td class="num">3</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryBrandedPromise" target="_blank">DeliveryBrandedPromise</a></td></tr>
+<tr><td class="num">4</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryCarrierService" target="_blank">DeliveryCarrierService</a></td></tr>
+<tr><td class="num">5</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryCarrierServiceAndLocations" target="_blank">DeliveryCarrierServiceAndLocations</a></td></tr>
+<tr><td class="num">6</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryCondition" target="_blank">DeliveryCondition</a></td></tr>
+<tr><td class="num">7</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryCountry" target="_blank">DeliveryCountry</a></td></tr>
+<tr><td class="num">8</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryCountryAndZone" target="_blank">DeliveryCountryAndZone</a></td></tr>
+<tr><td class="num">9</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryCountryCodeOrRestOfWorld" target="_blank">DeliveryCountryCodeOrRestOfWorld</a></td></tr>
+<tr><td class="num">10</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryCountryCodesOrRestOfWorld" target="_blank">DeliveryCountryCodesOrRestOfWorld</a></td></tr>
+<tr><td class="num">11</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryCustomization" target="_blank">DeliveryCustomization</a></td></tr>
+<tr><td class="num">12</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryCustomizationError" target="_blank">DeliveryCustomizationError</a></td></tr>
+<tr><td class="num">13</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryLocalPickupSettings" target="_blank">DeliveryLocalPickupSettings</a></td></tr>
+<tr><td class="num">14</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryLocationGroup" target="_blank">DeliveryLocationGroup</a></td></tr>
+<tr><td class="num">15</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryLocationGroupZone" target="_blank">DeliveryLocationGroupZone</a></td></tr>
+<tr><td class="num">16</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryLocationLocalPickupSettingsError" target="_blank">DeliveryLocationLocalPickupSettingsError</a></td></tr>
+<tr><td class="num">17</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryMethod" target="_blank">DeliveryMethod</a></td></tr>
+<tr><td class="num">18</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryMethodAdditionalInformation" target="_blank">DeliveryMethodAdditionalInformation</a></td></tr>
+<tr><td class="num">19</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryMethodDefinition" target="_blank">DeliveryMethodDefinition</a></td></tr>
+<tr><td class="num">20</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryMethodDefinitionCounts" target="_blank">DeliveryMethodDefinitionCounts</a></td></tr>
+<tr><td class="num">21</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryParticipant" target="_blank">DeliveryParticipant</a></td></tr>
+<tr><td class="num">22</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryParticipantService" target="_blank">DeliveryParticipantService</a></td></tr>
+<tr><td class="num">23</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryProductVariantsCount" target="_blank">DeliveryProductVariantsCount</a></td></tr>
+<tr><td class="num">24</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryProfile" target="_blank">DeliveryProfile</a></td></tr>
+<tr><td class="num">25</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryProfileItem" target="_blank">DeliveryProfileItem</a></td></tr>
+<tr><td class="num">26</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryProfileLocationGroup" target="_blank">DeliveryProfileLocationGroup</a></td></tr>
+<tr><td class="num">27</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryPromiseParticipant" target="_blank">DeliveryPromiseParticipant</a></td></tr>
+<tr><td class="num">28</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryPromiseProvider" target="_blank">DeliveryPromiseProvider</a></td></tr>
+<tr><td class="num">29</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryPromiseSetting" target="_blank">DeliveryPromiseSetting</a></td></tr>
+<tr><td class="num">30</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryProvince" target="_blank">DeliveryProvince</a></td></tr>
+<tr><td class="num">31</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryRateDefinition" target="_blank">DeliveryRateDefinition</a></td></tr>
+<tr><td class="num">32</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryZone" target="_blank">DeliveryZone</a></td></tr>
+<tr><td class="num">33</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/EditableProperty" target="_blank">EditableProperty</a></td></tr>
+<tr><td class="num">34</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/FinancialSummaryDiscountAllocation" target="_blank">FinancialSummaryDiscountAllocation</a></td></tr>
+<tr><td class="num">35</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/FinancialSummaryDiscountApplication" target="_blank">FinancialSummaryDiscountApplication</a></td></tr>
+<tr><td class="num">36</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Fulfillment" target="_blank">Fulfillment</a></td></tr>
+<tr><td class="num">37</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/FulfillmentEvent" target="_blank">FulfillmentEvent</a></td></tr>
+<tr><td class="num">38</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/FulfillmentHold" target="_blank">FulfillmentHold</a></td></tr>
+<tr><td class="num">39</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/FulfillmentLineItem" target="_blank">FulfillmentLineItem</a></td></tr>
+<tr><td class="num">40</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/FulfillmentOrder" target="_blank">FulfillmentOrder</a></td></tr>
+<tr><td class="num">41</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/FulfillmentOrderAssignedLocation" target="_blank">FulfillmentOrderAssignedLocation</a></td></tr>
+<tr><td class="num">42</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/FulfillmentOrderCancelError" target="_blank">FulfillmentOrderCancelError</a></td></tr>
+<tr><td class="num">43</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/FulfillmentOrderDestination" target="_blank">FulfillmentOrderDestination</a></td></tr>
+<tr><td class="num">44</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/FulfillmentOrderInternationalDuties" target="_blank">FulfillmentOrderInternationalDuties</a></td></tr>
+<tr><td class="num">45</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/FulfillmentOrderLineItem" target="_blank">FulfillmentOrderLineItem</a></td></tr>
+<tr><td class="num">46</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/FulfillmentOrderLineItemFinancialSummary" target="_blank">FulfillmentOrderLineItemFinancialSummary</a></td></tr>
+<tr><td class="num">47</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/FulfillmentOrderLineItemWarning" target="_blank">FulfillmentOrderLineItemWarning</a></td></tr>
+<tr><td class="num">48</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/FulfillmentOrderLocationForMove" target="_blank">FulfillmentOrderLocationForMove</a></td></tr>
+<tr><td class="num">49</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/FulfillmentOrderMerchantRequest" target="_blank">FulfillmentOrderMerchantRequest</a></td></tr>
+<tr><td class="num">50</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/FulfillmentOrderMergeResult" target="_blank">FulfillmentOrderMergeResult</a></td></tr>
+<tr><td class="num">51</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/FulfillmentOrderSplitResult" target="_blank">FulfillmentOrderSplitResult</a></td></tr>
+<tr><td class="num">52</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/FulfillmentOrderSupportedAction" target="_blank">FulfillmentOrderSupportedAction</a></td></tr>
+<tr><td class="num">53</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/FulfillmentOriginAddress" target="_blank">FulfillmentOriginAddress</a></td></tr>
+<tr><td class="num">54</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/FulfillmentService" target="_blank">FulfillmentService</a></td></tr>
+<tr><td class="num">55</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/FulfillmentTrackingInfo" target="_blank">FulfillmentTrackingInfo</a></td></tr>
+<tr><td class="num">56</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShippingRate" target="_blank">ShippingRate</a></td></tr>
+</tbody>
+  </table>
+  <a class="back" href="#top">▲ トップへ戻る</a>
+</section>
+
+<section id="shopify-markets">
+  <h2>Shopify Markets <span class="col-count">(12 objects)</span></h2>
+  <table>
+    <thead><tr><th>#</th><th>オブジェクト名</th></tr></thead>
+    <tbody><tr><td class="num">1</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Market" target="_blank">Market</a></td></tr>
+<tr><td class="num">2</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MarketConditions" target="_blank">MarketConditions</a></td></tr>
+<tr><td class="num">3</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MarketCurrencySettings" target="_blank">MarketCurrencySettings</a></td></tr>
+<tr><td class="num">4</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MarketRegionCountry" target="_blank">MarketRegionCountry</a></td></tr>
+<tr><td class="num">5</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MarketsB2BEntitlement" target="_blank">MarketsB2BEntitlement</a></td></tr>
+<tr><td class="num">6</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MarketsRegionsEntitlement" target="_blank">MarketsRegionsEntitlement</a></td></tr>
+<tr><td class="num">7</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MarketsResolvedValues" target="_blank">MarketsResolvedValues</a></td></tr>
+<tr><td class="num">8</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MarketsRetailEntitlement" target="_blank">MarketsRetailEntitlement</a></td></tr>
+<tr><td class="num">9</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MarketWebPresence" target="_blank">MarketWebPresence</a></td></tr>
+<tr><td class="num">10</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/MarketWebPresenceRootUrl" target="_blank">MarketWebPresenceRootUrl</a></td></tr>
+<tr><td class="num">11</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/RegionsCondition" target="_blank">RegionsCondition</a></td></tr>
+<tr><td class="num">12</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ResolvedPriceInclusivity" target="_blank">ResolvedPriceInclusivity</a></td></tr>
+</tbody>
+  </table>
+  <a class="back" href="#top">▲ トップへ戻る</a>
+</section>
+
+<section id="shopify-payments">
+  <h2>Shopify Payments <span class="col-count">(23 objects)</span></h2>
+  <table>
+    <thead><tr><th>#</th><th>オブジェクト名</th></tr></thead>
+    <tbody><tr><td class="num">1</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/FinanceKycInformation" target="_blank">FinanceKycInformation</a></td></tr>
+<tr><td class="num">2</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/FinancialKycShopOwner" target="_blank">FinancialKycShopOwner</a></td></tr>
+<tr><td class="num">3</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/OrderDisputeSummary" target="_blank">OrderDisputeSummary</a></td></tr>
+<tr><td class="num">4</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopifyPaymentsAccount" target="_blank">ShopifyPaymentsAccount</a></td></tr>
+<tr><td class="num">5</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopifyPaymentsAddressBasic" target="_blank">ShopifyPaymentsAddressBasic</a></td></tr>
+<tr><td class="num">6</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopifyPaymentsAdjustmentOrder" target="_blank">ShopifyPaymentsAdjustmentOrder</a></td></tr>
+<tr><td class="num">7</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopifyPaymentsAssociatedOrder" target="_blank">ShopifyPaymentsAssociatedOrder</a></td></tr>
+<tr><td class="num">8</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopifyPaymentsBalanceTransaction" target="_blank">ShopifyPaymentsBalanceTransaction</a></td></tr>
+<tr><td class="num">9</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopifyPaymentsBalanceTransactionAssociatedPayout" target="_blank">ShopifyPaymentsBalanceTransactionAssociatedPayout</a></td></tr>
+<tr><td class="num">10</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopifyPaymentsBankAccount" target="_blank">ShopifyPaymentsBankAccount</a></td></tr>
+<tr><td class="num">11</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopifyPaymentsDefaultChargeStatementDescriptor" target="_blank">ShopifyPaymentsDefaultChargeStatementDescriptor</a></td></tr>
+<tr><td class="num">12</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopifyPaymentsDispute" target="_blank">ShopifyPaymentsDispute</a></td></tr>
+<tr><td class="num">13</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopifyPaymentsDisputeEvidence" target="_blank">ShopifyPaymentsDisputeEvidence</a></td></tr>
+<tr><td class="num">14</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopifyPaymentsDisputeFileUpload" target="_blank">ShopifyPaymentsDisputeFileUpload</a></td></tr>
+<tr><td class="num">15</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopifyPaymentsDisputeFulfillment" target="_blank">ShopifyPaymentsDisputeFulfillment</a></td></tr>
+<tr><td class="num">16</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopifyPaymentsDisputeReasonDetails" target="_blank">ShopifyPaymentsDisputeReasonDetails</a></td></tr>
+<tr><td class="num">17</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopifyPaymentsJpChargeStatementDescriptor" target="_blank">ShopifyPaymentsJpChargeStatementDescriptor</a></td></tr>
+<tr><td class="num">18</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopifyPaymentsMerchantCategoryCode" target="_blank">ShopifyPaymentsMerchantCategoryCode</a></td></tr>
+<tr><td class="num">19</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopifyPaymentsPayout" target="_blank">ShopifyPaymentsPayout</a></td></tr>
+<tr><td class="num">20</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopifyPaymentsPayoutSchedule" target="_blank">ShopifyPaymentsPayoutSchedule</a></td></tr>
+<tr><td class="num">21</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopifyPaymentsPayoutSummary" target="_blank">ShopifyPaymentsPayoutSummary</a></td></tr>
+<tr><td class="num">22</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopifyPaymentsTaxIdentification" target="_blank">ShopifyPaymentsTaxIdentification</a></td></tr>
+<tr><td class="num">23</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopifyPaymentsToolingProviderPayout" target="_blank">ShopifyPaymentsToolingProviderPayout</a></td></tr>
+</tbody>
+  </table>
+  <a class="back" href="#top">▲ トップへ戻る</a>
+</section>
+
+<section id="store-properties">
+  <h2>Store properties <span class="col-count">(19 objects)</span></h2>
+  <table>
+    <thead><tr><th>#</th><th>オブジェクト名</th></tr></thead>
+    <tbody><tr><td class="num">1</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/BusinessEntity" target="_blank">BusinessEntity</a></td></tr>
+<tr><td class="num">2</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/BusinessEntityAddress" target="_blank">BusinessEntityAddress</a></td></tr>
+<tr><td class="num">3</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CartTransformEligibleOperations" target="_blank">CartTransformEligibleOperations</a></td></tr>
+<tr><td class="num">4</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CartTransformFeature" target="_blank">CartTransformFeature</a></td></tr>
+<tr><td class="num">5</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/CurrencyFormats" target="_blank">CurrencyFormats</a></td></tr>
+<tr><td class="num">6</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/FilterOption" target="_blank">FilterOption</a></td></tr>
+<tr><td class="num">7</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/LimitedPendingOrderCount" target="_blank">LimitedPendingOrderCount</a></td></tr>
+<tr><td class="num">8</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Location" target="_blank">Location</a></td></tr>
+<tr><td class="num">9</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/LocationAddress" target="_blank">LocationAddress</a></td></tr>
+<tr><td class="num">10</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/LocationsCondition" target="_blank">LocationsCondition</a></td></tr>
+<tr><td class="num">11</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/LocationSnapshot" target="_blank">LocationSnapshot</a></td></tr>
+<tr><td class="num">12</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/LocationSuggestedAddress" target="_blank">LocationSuggestedAddress</a></td></tr>
+<tr><td class="num">13</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/NavigationItem" target="_blank">NavigationItem</a></td></tr>
+<tr><td class="num">14</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Shop" target="_blank">Shop</a></td></tr>
+<tr><td class="num">15</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopAddress" target="_blank">ShopAddress</a></td></tr>
+<tr><td class="num">16</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopFeatures" target="_blank">ShopFeatures</a></td></tr>
+<tr><td class="num">17</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopPlan" target="_blank">ShopPlan</a></td></tr>
+<tr><td class="num">18</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopPolicy" target="_blank">ShopPolicy</a></td></tr>
+<tr><td class="num">19</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/ShopResourceLimits" target="_blank">ShopResourceLimits</a></td></tr>
+</tbody>
+  </table>
+  <a class="back" href="#top">▲ トップへ戻る</a>
+</section>
+
+<section id="webhooks">
+  <h2>Webhooks <span class="col-count">(4 objects)</span></h2>
+  <table>
+    <thead><tr><th>#</th><th>オブジェクト名</th></tr></thead>
+    <tbody><tr><td class="num">1</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/WebhookEventBridgeEndpoint" target="_blank">WebhookEventBridgeEndpoint</a></td></tr>
+<tr><td class="num">2</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/WebhookHttpEndpoint" target="_blank">WebhookHttpEndpoint</a></td></tr>
+<tr><td class="num">3</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/WebhookPubSubEndpoint" target="_blank">WebhookPubSubEndpoint</a></td></tr>
+<tr><td class="num">4</td><td><a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/WebhookSubscription" target="_blank">WebhookSubscription</a></td></tr>
+</tbody>
+  </table>
+  <a class="back" href="#top">▲ トップへ戻る</a>
+</section>
+
+</main>
+<script>
+function filterNav(q) {
+  q = q.toLowerCase();
+  document.querySelectorAll('#nav-list li').forEach(function(li) {
+    li.style.display = li.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>
