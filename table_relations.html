@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>テーブルリレーション図 - Customer / Order / Product</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Segoe UI", Arial, sans-serif; font-size: 13px; color: #222; background: #f0f2f8; }
+  header { background: #1a1a2e; color: #fff; padding: 24px 40px; }
+  header h1 { font-size: 22px; }
+  header p { font-size: 12px; color: #aaa; margin-top: 4px; }
+  main { max-width: 1400px; margin: 32px auto; padding: 0 24px; }
+
+  /* Nav */
+  .nav { display: flex; gap: 12px; margin-bottom: 28px; flex-wrap: wrap; }
+  .nav a { background: #1a1a2e; color: #fff; padding: 8px 20px; border-radius: 20px; text-decoration: none; font-size: 13px; }
+  .nav a:hover { background: #5c6bc0; }
+  .nav a.customer { background: #1565c0; }
+  .nav a.order { background: #6a1b9a; }
+  .nav a.product { background: #2e7d32; }
+
+  /* Domain sections */
+  .domain { margin-bottom: 56px; }
+  .domain-title { font-size: 20px; font-weight: 700; padding: 10px 20px; border-radius: 8px 8px 0 0; color: #fff; display: flex; align-items: center; gap: 10px; }
+  .domain-title .badge { font-size: 12px; font-weight: 400; opacity: 0.85; }
+  .customer-title { background: #1565c0; }
+  .order-title { background: #6a1b9a; }
+  .product-title { background: #2e7d32; }
+  .cross-title { background: #37474f; }
+
+  /* Relation grid */
+  .rel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; padding: 20px; background: #fff; border-radius: 0 0 8px 8px; border: 1px solid #ddd; border-top: none; }
+
+  /* Table card */
+  .tcard { border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; }
+  .tcard-header { padding: 8px 14px; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: space-between; }
+  .tcard-header .col-count { font-size: 11px; font-weight: 400; opacity: 0.8; }
+  .tcard-body { padding: 8px 0; }
+  .tcard-row { display: flex; align-items: center; gap: 6px; padding: 3px 14px; font-size: 12px; }
+  .tcard-row.pk-row { background: #fff8e1; font-weight: 600; }
+  .tcard-row.fk-row { background: #f3f0ff; }
+  .badge-pk { background: #f57f17; color: #fff; border-radius: 3px; padding: 1px 5px; font-size: 10px; font-weight: 700; }
+  .badge-fk { background: #7b1fa2; color: #fff; border-radius: 3px; padding: 1px 5px; font-size: 10px; font-weight: 700; }
+  .col-name { font-family: monospace; }
+  .col-type { color: #888; font-size: 11px; margin-left: auto; }
+
+  /* Primary table cards */
+  .tcard.primary .tcard-header { background: #1a1a2e; color: #fff; font-size: 14px; }
+  .tcard.customer-primary .tcard-header { background: #1565c0; }
+  .tcard.order-primary .tcard-header { background: #6a1b9a; }
+  .tcard.product-primary .tcard-header { background: #2e7d32; }
+
+  /* Child table colors by domain */
+  .tcard.customer-child .tcard-header { background: #e3f2fd; color: #0d47a1; border-bottom: 1px solid #bbdefb; }
+  .tcard.order-child .tcard-header { background: #f3e5f5; color: #4a148c; border-bottom: 1px solid #e1bee7; }
+  .tcard.product-child .tcard-header { background: #e8f5e9; color: #1b5e20; border-bottom: 1px solid #c8e6c9; }
+  .tcard.cross-child .tcard-header { background: #eceff1; color: #263238; border-bottom: 1px solid #cfd8dc; }
+  .tcard.payment-child .tcard-header { background: #fff3e0; color: #e65100; border-bottom: 1px solid #ffe0b2; }
+  .tcard.fulfillment-child .tcard-header { background: #e0f7fa; color: #006064; border-bottom: 1px solid #b2ebf2; }
+
+  /* Relation arrows section */
+  .rel-arrows { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 24px; }
+  .rel-arrows h3 { font-size: 16px; margin-bottom: 12px; color: #37474f; }
+  .arrow-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .arrow-table th { background: #37474f; color: #fff; padding: 7px 12px; text-align: left; }
+  .arrow-table td { padding: 6px 12px; border-bottom: 1px solid #eee; font-family: monospace; }
+  .arrow-table tr:last-child td { border-bottom: none; }
+  .arrow-table tr:hover td { background: #f5f5f5; }
+  .arrow { color: #7b1fa2; font-weight: 700; }
+  .note { color: #888; font-size: 11px; font-family: sans-serif; }
+
+  /* Legend */
+  .legend { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 24px; background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 14px 20px; align-items: center; }
+  .legend-title { font-weight: 700; color: #37474f; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+
+  /* Divider label */
+  .section-label { font-size: 14px; font-weight: 700; color: #37474f; margin: 24px 0 10px; padding-left: 4px; border-left: 4px solid #5c6bc0; padding-left: 10px; }
+
+  /* Full-width card */
+  .tcard.full { grid-column: 1 / -1; }
+  .tcard-cols { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0; }
+  .tcard-col { border-right: 1px solid #eee; }
+  .tcard-col:last-child { border-right: none; }
+</style>
+</head>
+<body>
+<header id="top">
+  <h1>テーブルリレーション図</h1>
+  <p>Customer / Order / Product に紐づくテーブルの関連図 &nbsp;|&nbsp; 全136テーブル中、主要3ドメインの関連テーブル</p>
+</header>
+<main>
+
+<div class="nav">
+  <a href="#customer" class="customer">Customer ドメイン</a>
+  <a href="#order" class="order">Order ドメイン</a>
+  <a href="#product" class="product">Product ドメイン</a>
+  <a href="#cross">クロスドメイン FK</a>
+  <a href="#matrix">リレーション一覧表</a>
+</div>
+
+<!-- LEGEND -->
+<div class="legend">
+  <span class="legend-title">凡例：</span>
+  <span class="legend-item"><span class="badge-pk">PK</span> 主キー</span>
+  <span class="legend-item"><span class="badge-fk">FK</span> 外部キー（参照先）</span>
+  <span class="legend-item" style="background:#fff8e1;padding:2px 8px;border-radius:4px;">黄背景 = PKカラム行</span>
+  <span class="legend-item" style="background:#f3f0ff;padding:2px 8px;border-radius:4px;">紫背景 = FKカラム行</span>
+</div>
+
+<!-- ===== CUSTOMER DOMAIN ===== -->
+<div class="domain" id="customer">
+  <div class="domain-title customer-title">Customer ドメイン <span class="badge">│ customer を中心に紐づく4テーブル</span></div>
+  <div class="rel-grid">
+
+    <!-- customer (primary) -->
+    <div class="tcard customer-primary">
+      <div class="tcard-header">customer <span class="col-count">35 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">id</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">last_order_id</span><span class="col-type">→ order.id</span></div>
+        <div class="tcard-row"><span class="col-name">email, phone, first_name, last_name ...</span></div>
+        <div class="tcard-row"><span class="col-name">orders_count, total_spent ...</span></div>
+        <div class="tcard-row"><span class="col-name">created_at, updated_at ...</span></div>
+      </div>
+    </div>
+
+    <!-- customer_address -->
+    <div class="tcard customer-child">
+      <div class="tcard-header">customer_address <span class="col-count">21 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">id</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">customer_id</span><span class="col-type">→ customer.id</span></div>
+        <div class="tcard-row"><span class="col-name">address1, address2, city, country ...</span></div>
+        <div class="tcard-row"><span class="col-name">province, zip, phone, name ...</span></div>
+      </div>
+    </div>
+
+    <!-- customer_tag -->
+    <div class="tcard customer-child">
+      <div class="tcard-header">customer_tag <span class="col-count">3 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">index</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">customer_id</span><span class="col-type">→ customer.id</span></div>
+        <div class="tcard-row"><span class="col-name">value</span><span class="col-type">text</span></div>
+      </div>
+    </div>
+
+    <!-- customer_tax_exemption -->
+    <div class="tcard customer-child">
+      <div class="tcard-header">customer_tax_exemption <span class="col-count">3 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">index</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">customer_id</span><span class="col-type">→ customer.id</span></div>
+        <div class="tcard-row"><span class="col-name">tax_exemption</span><span class="col-type">text</span></div>
+      </div>
+    </div>
+
+    <!-- customer_visit -->
+    <div class="tcard customer-child">
+      <div class="tcard-header">customer_visit <span class="col-count">13 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">id</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row"><span class="col-name">occurred_at, landing_page ...</span></div>
+        <div class="tcard-row"><span class="col-name">referrer_url, source, utm_* ...</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== ORDER DOMAIN ===== -->
+<div class="domain" id="order">
+  <div class="domain-title order-title">Order ドメイン <span class="badge">│ order を中心に紐づく30以上のテーブル</span></div>
+  <div class="rel-grid">
+
+    <!-- order (primary) -->
+    <div class="tcard order-primary">
+      <div class="tcard-header">order <span class="col-count">197 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">id</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">customer_id</span><span class="col-type">→ customer.id</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">purchasing_entity_customer_id</span><span class="col-type">→ customer.id</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">location_id</span><span class="col-type">→ location.id</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">staff_member_id</span><span class="col-type">→ staff_member.id</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">purchasing_entity_company_id</span><span class="col-type">→ company.id</span></div>
+        <div class="tcard-row"><span class="col-name">financial_status, fulfillment_status ...</span></div>
+        <div class="tcard-row"><span class="col-name">created_at, processed_at ...</span></div>
+      </div>
+    </div>
+
+    <!-- order_line -->
+    <div class="tcard order-child">
+      <div class="tcard-header">order_line <span class="col-count">56 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">id</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">order_id</span><span class="col-type">→ order.id</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">product_id</span><span class="col-type">→ product.id</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">variant_id</span><span class="col-type">→ product_variant.id</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">staff_member_id</span><span class="col-type">→ staff_member.id</span></div>
+        <div class="tcard-row"><span class="col-name">quantity, title, sku, price ...</span></div>
+      </div>
+    </div>
+
+    <!-- order_line_custom_attribute -->
+    <div class="tcard order-child">
+      <div class="tcard-header">order_line_custom_attribute <span class="col-count">3 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">key</span><span class="col-type">text</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">order_line_id</span><span class="col-type">→ order_line.id</span></div>
+        <div class="tcard-row"><span class="col-name">value</span><span class="col-type">text</span></div>
+      </div>
+    </div>
+
+    <!-- order_line_tax_line -->
+    <div class="tcard order-child">
+      <div class="tcard-header">order_line_tax_line <span class="col-count">11 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">index</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">order_line_id</span><span class="col-type">→ order_line.id</span></div>
+        <div class="tcard-row"><span class="col-name">title, rate, price_set ...</span></div>
+      </div>
+    </div>
+
+    <!-- discount_allocation -->
+    <div class="tcard order-child">
+      <div class="tcard-header">discount_allocation <span class="col-count">7 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">index</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">order_line_id</span><span class="col-type">→ order_line.id</span></div>
+        <div class="tcard-row"><span class="col-name">amount_set, discount_application_index</span></div>
+      </div>
+    </div>
+
+    <!-- discount_application -->
+    <div class="tcard order-child">
+      <div class="tcard-header">discount_application <span class="col-count">12 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">index</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">order_id</span><span class="col-type">→ order.id</span></div>
+        <div class="tcard-row"><span class="col-name">type, code, value, value_type ...</span></div>
+      </div>
+    </div>
+
+    <!-- order_custom_attribute -->
+    <div class="tcard order-child">
+      <div class="tcard-header">order_custom_attribute <span class="col-count">3 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">key</span><span class="col-type">text</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">order_id</span><span class="col-type">→ order.id</span></div>
+        <div class="tcard-row"><span class="col-name">value</span><span class="col-type">text</span></div>
+      </div>
+    </div>
+
+    <!-- order_discount_code -->
+    <div class="tcard order-child">
+      <div class="tcard-header">order_discount_code <span class="col-count">3 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">index</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">order_id</span><span class="col-type">→ order.id</span></div>
+        <div class="tcard-row"><span class="col-name">code</span><span class="col-type">text</span></div>
+      </div>
+    </div>
+
+    <!-- order_tag -->
+    <div class="tcard order-child">
+      <div class="tcard-header">order_tag <span class="col-count">3 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">index</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">order_id</span><span class="col-type">→ order.id</span></div>
+        <div class="tcard-row"><span class="col-name">value</span><span class="col-type">text</span></div>
+      </div>
+    </div>
+
+    <!-- order_shipping_line -->
+    <div class="tcard order-child">
+      <div class="tcard-header">order_shipping_line <span class="col-count">23 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">id</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">order_id</span><span class="col-type">→ order.id</span></div>
+        <div class="tcard-row"><span class="col-name">title, code, carrier_identifier ...</span></div>
+      </div>
+    </div>
+
+    <!-- order_shipping_tax_line -->
+    <div class="tcard order-child">
+      <div class="tcard-header">order_shipping_tax_line <span class="col-count">11 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">index</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">order_shipping_line_id</span><span class="col-type">→ order_shipping_line.id</span></div>
+        <div class="tcard-row"><span class="col-name">title, rate, price_set ...</span></div>
+      </div>
+    </div>
+
+    <!-- order_risk_assessment -->
+    <div class="tcard order-child">
+      <div class="tcard-header">order_risk_assessment <span class="col-count">4 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">index</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">order_id</span><span class="col-type">→ order.id</span></div>
+        <div class="tcard-row"><span class="col-name">risk_level, provider_id</span></div>
+      </div>
+    </div>
+
+    <!-- order_risk_fact -->
+    <div class="tcard order-child">
+      <div class="tcard-header">order_risk_fact <span class="col-count">5 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">index</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">order_id</span><span class="col-type">→ order.id</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">order_risk_assessment_index</span><span class="col-type">→ order_risk_assessment.index</span></div>
+        <div class="tcard-row"><span class="col-name">description, sentiment</span></div>
+      </div>
+    </div>
+
+    <!-- order_risk_summary -->
+    <div class="tcard order-child">
+      <div class="tcard-header">order_risk_summary <span class="col-count">2 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">order_id</span><span class="col-type">→ order.id</span></div>
+        <div class="tcard-row"><span class="col-name">risk_level</span><span class="col-type">text</span></div>
+      </div>
+    </div>
+
+    <!-- order_adjustment -->
+    <div class="tcard order-child">
+      <div class="tcard-header">order_adjustment <span class="col-count">11 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">id</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row"><span class="col-name">amount, kind, reason ...</span></div>
+      </div>
+    </div>
+
+    <!-- fulfillment_order -->
+    <div class="tcard fulfillment-child">
+      <div class="tcard-header">fulfillment_order <span class="col-count">36 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">id</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">order_id</span><span class="col-type">→ order.id</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">customer_id</span><span class="col-type">→ customer.id</span></div>
+        <div class="tcard-row"><span class="col-name">status, request_status ...</span></div>
+      </div>
+    </div>
+
+    <!-- fulfillment_order_line_item -->
+    <div class="tcard fulfillment-child">
+      <div class="tcard-header">fulfillment_order_line_item <span class="col-count">15 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">id</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">fulfillment_order_id</span><span class="col-type">→ fulfillment_order.id</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">product_variant_id</span><span class="col-type">→ product_variant.id</span></div>
+        <div class="tcard-row"><span class="col-name">quantity, remaining_quantity ...</span></div>
+      </div>
+    </div>
+
+    <!-- fulfillment_order_fulfillment_hold -->
+    <div class="tcard fulfillment-child">
+      <div class="tcard-header">fulfillment_order_fulfillment_hold <span class="col-count">7 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">id</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">fulfillment_order_id</span><span class="col-type">→ fulfillment_order.id</span></div>
+        <div class="tcard-row"><span class="col-name">reason, reason_notes, display_reason ...</span></div>
+      </div>
+    </div>
+
+    <!-- fulfillment -->
+    <div class="tcard fulfillment-child">
+      <div class="tcard-header">fulfillment <span class="col-count">15 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">id</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">order_id</span><span class="col-type">→ order.id</span></div>
+        <div class="tcard-row"><span class="col-name">status, created_at, updated_at ...</span></div>
+      </div>
+    </div>
+
+    <!-- fulfillment_line_item -->
+    <div class="tcard fulfillment-child">
+      <div class="tcard-header">fulfillment_line_item <span class="col-count">14 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">id</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">fulfillment_id</span><span class="col-type">→ fulfillment.id</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">product_id</span><span class="col-type">→ product.id</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">product_variant_id</span><span class="col-type">→ product_variant.id</span></div>
+        <div class="tcard-row"><span class="col-name">quantity ...</span></div>
+      </div>
+    </div>
+
+    <!-- fulfillment_event -->
+    <div class="tcard fulfillment-child">
+      <div class="tcard-header">fulfillment_event <span class="col-count">14 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">id</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">order_id</span><span class="col-type">→ order.id</span></div>
+        <div class="tcard-row"><span class="col-name">status, message, happened_at ...</span></div>
+      </div>
+    </div>
+
+    <!-- fulfillment_tracking_info -->
+    <div class="tcard fulfillment-child">
+      <div class="tcard-header">fulfillment_tracking_info <span class="col-count">5 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">index</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">fulfillment_id</span><span class="col-type">→ fulfillment.id</span></div>
+        <div class="tcard-row"><span class="col-name">url, number, company</span></div>
+      </div>
+    </div>
+
+    <!-- return -->
+    <div class="tcard order-child">
+      <div class="tcard-header">return <span class="col-count">9 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">id</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">order_id</span><span class="col-type">→ order.id</span></div>
+        <div class="tcard-row"><span class="col-name">status, name, created_at ...</span></div>
+      </div>
+    </div>
+
+    <!-- return_line_item -->
+    <div class="tcard order-child">
+      <div class="tcard-header">return_line_item <span class="col-count">9 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">id</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">return_id</span><span class="col-type">→ return.id</span></div>
+        <div class="tcard-row"><span class="col-name">quantity, refundable_quantity ...</span></div>
+      </div>
+    </div>
+
+    <!-- return_shipping_fee -->
+    <div class="tcard order-child">
+      <div class="tcard-header">return_shipping_fee <span class="col-count">6 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">id</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">return_id</span><span class="col-type">→ return.id</span></div>
+        <div class="tcard-row"><span class="col-name">amount_set ...</span></div>
+      </div>
+    </div>
+
+    <!-- refund -->
+    <div class="tcard payment-child">
+      <div class="tcard-header">refund <span class="col-count">11 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">id</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">order_id</span><span class="col-type">→ order.id</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">return_id</span><span class="col-type">→ return.id</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">staff_member_id</span><span class="col-type">→ staff_member.id</span></div>
+        <div class="tcard-row"><span class="col-name">created_at, note, total_refunded ...</span></div>
+      </div>
+    </div>
+
+    <!-- refund_line_item -->
+    <div class="tcard payment-child">
+      <div class="tcard-header">refund_line_item <span class="col-count">19 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">id</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">refund_id</span><span class="col-type">→ refund.id</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">order_line_id</span><span class="col-type">→ order_line.id</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">location_id</span><span class="col-type">→ location.id</span></div>
+        <div class="tcard-row"><span class="col-name">quantity, restock_type ...</span></div>
+      </div>
+    </div>
+
+    <!-- refund_shipping_line -->
+    <div class="tcard payment-child">
+      <div class="tcard-header">refund_shipping_line <span class="col-count">11 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">id</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">refund_id</span><span class="col-type">→ refund.id</span></div>
+        <div class="tcard-row"><span class="col-name">amount_set, subtotal_set ...</span></div>
+      </div>
+    </div>
+
+    <!-- transaction -->
+    <div class="tcard payment-child">
+      <div class="tcard-header">transaction <span class="col-count">41 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">id</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">order_id</span><span class="col-type">→ order.id</span></div>
+        <div class="tcard-row"><span class="col-name">kind, status, gateway, amount ...</span></div>
+      </div>
+    </div>
+
+    <!-- tender_transaction -->
+    <div class="tcard payment-child">
+      <div class="tcard-header">tender_transaction <span class="col-count">11 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">id</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">order_id</span><span class="col-type">→ order.id</span></div>
+        <div class="tcard-row"><span class="col-name">amount, currency, payment_method ...</span></div>
+      </div>
+    </div>
+
+    <!-- dispute -->
+    <div class="tcard payment-child">
+      <div class="tcard-header">dispute <span class="col-count">12 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">id</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">order_id</span><span class="col-type">→ order.id</span></div>
+        <div class="tcard-row"><span class="col-name">reason, status, amount ...</span></div>
+      </div>
+    </div>
+
+    <!-- sales_agreement -->
+    <div class="tcard order-child">
+      <div class="tcard-header">sales_agreement <span class="col-count">8 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">id</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">order_id</span><span class="col-type">→ order.id</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">refund_id</span><span class="col-type">→ refund.id</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">return_id</span><span class="col-type">→ return.id</span></div>
+        <div class="tcard-row"><span class="col-name">happened_at, reason ...</span></div>
+      </div>
+    </div>
+
+    <!-- sale -->
+    <div class="tcard order-child">
+      <div class="tcard-header">sale <span class="col-count">22 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">id</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">sales_agreement_id</span><span class="col-type">→ sales_agreement.id</span></div>
+        <div class="tcard-row"><span class="col-name">type, quantity, price, discount ...</span></div>
+      </div>
+    </div>
+
+    <!-- sale_tax -->
+    <div class="tcard order-child">
+      <div class="tcard-header">sale_tax <span class="col-count">7 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">id</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">sale_id</span><span class="col-type">→ sale.id</span></div>
+        <div class="tcard-row"><span class="col-name">amount, rate, title ...</span></div>
+      </div>
+    </div>
+
+    <!-- gift_card -->
+    <div class="tcard cross-child">
+      <div class="tcard-header">gift_card <span class="col-count">20 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">id</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">customer_id</span><span class="col-type">→ customer.id</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">order_id</span><span class="col-type">→ order.id</span></div>
+        <div class="tcard-row"><span class="col-name">balance, initial_value, code ...</span></div>
+      </div>
+    </div>
+
+    <!-- draft_order -->
+    <div class="tcard cross-child">
+      <div class="tcard-header">draft_order <span class="col-count">64 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">id</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">customer_id</span><span class="col-type">→ customer.id</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">order_id</span><span class="col-type">→ order.id</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">purchasing_entity_customer_id</span><span class="col-type">→ customer.id</span></div>
+        <div class="tcard-row"><span class="col-name">status, email, total ...</span></div>
+      </div>
+    </div>
+
+    <!-- draft_order_line -->
+    <div class="tcard cross-child">
+      <div class="tcard-header">draft_order_line <span class="col-count">43 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">id</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">draft_order_id</span><span class="col-type">→ draft_order.id</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">product_id</span><span class="col-type">→ product.id</span></div>
+        <div class="tcard-row"><span class="col-name">title, quantity, price ...</span></div>
+      </div>
+    </div>
+
+    <!-- draft_order_line_custom_attribute -->
+    <div class="tcard cross-child">
+      <div class="tcard-header">draft_order_line_custom_attribute <span class="col-count">4 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">key</span><span class="col-type">text</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">draft_order_line_id</span><span class="col-type">→ draft_order_line.id</span></div>
+        <div class="tcard-row"><span class="col-name">value</span></div>
+      </div>
+    </div>
+
+    <!-- draft_order_line_tax_line -->
+    <div class="tcard cross-child">
+      <div class="tcard-header">draft_order_line_tax_line <span class="col-count">12 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">index</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">draft_order_line_id</span><span class="col-type">→ draft_order_line.id</span></div>
+        <div class="tcard-row"><span class="col-name">title, rate, price_set ...</span></div>
+      </div>
+    </div>
+
+    <!-- draft_order_custom_attribute -->
+    <div class="tcard cross-child">
+      <div class="tcard-header">draft_order_custom_attribute <span class="col-count">3 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">key</span><span class="col-type">text</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">draft_order_id</span><span class="col-type">→ draft_order.id</span></div>
+        <div class="tcard-row"><span class="col-name">value</span></div>
+      </div>
+    </div>
+
+    <!-- draft_order_tag -->
+    <div class="tcard cross-child">
+      <div class="tcard-header">draft_order_tag <span class="col-count">3 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">index</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">draft_order_id</span><span class="col-type">→ draft_order.id</span></div>
+        <div class="tcard-row"><span class="col-name">value</span></div>
+      </div>
+    </div>
+
+    <!-- draft_order_tax_line -->
+    <div class="tcard cross-child">
+      <div class="tcard-header">draft_order_tax_line <span class="col-count">11 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">index</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">draft_order_id</span><span class="col-type">→ draft_order.id</span></div>
+        <div class="tcard-row"><span class="col-name">title, rate, price_set ...</span></div>
+      </div>
+    </div>
+
+    <!-- abandoned_checkout -->
+    <div class="tcard cross-child">
+      <div class="tcard-header">abandoned_checkout <span class="col-count">35 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">id</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">customer_id</span><span class="col-type">→ customer.id</span></div>
+        <div class="tcard-row"><span class="col-name">email, total_price, created_at ...</span></div>
+      </div>
+    </div>
+
+    <!-- abandoned_checkout_line -->
+    <div class="tcard cross-child">
+      <div class="tcard-header">abandoned_checkout_line <span class="col-count">33 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">index</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">checkout_id</span><span class="col-type">→ abandoned_checkout.id</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">product_id</span><span class="col-type">→ product.id</span></div>
+        <div class="tcard-row"><span class="col-name">quantity, title, price ...</span></div>
+      </div>
+    </div>
+
+    <!-- abandoned_checkout_discount_code -->
+    <div class="tcard cross-child">
+      <div class="tcard-header">abandoned_checkout_discount_code <span class="col-count">3 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">index</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">checkout_id</span><span class="col-type">→ abandoned_checkout.id</span></div>
+        <div class="tcard-row"><span class="col-name">code</span></div>
+      </div>
+    </div>
+
+    <!-- abandoned_checkout_tax_line -->
+    <div class="tcard cross-child">
+      <div class="tcard-header">abandoned_checkout_tax_line <span class="col-count">11 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">index</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">checkout_id</span><span class="col-type">→ abandoned_checkout.id</span></div>
+        <div class="tcard-row"><span class="col-name">title, rate, price_set ...</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== PRODUCT DOMAIN ===== -->
+<div class="domain" id="product">
+  <div class="domain-title product-title">Product ドメイン <span class="badge">│ product を中心に紐づく15以上のテーブル</span></div>
+  <div class="rel-grid">
+
+    <!-- product (primary) -->
+    <div class="tcard product-primary">
+      <div class="tcard-header">product <span class="col-count">35 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">id</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row"><span class="col-name">title, handle, status ...</span></div>
+        <div class="tcard-row"><span class="col-name">vendor, product_type ...</span></div>
+        <div class="tcard-row"><span class="col-name">created_at, updated_at, published_at ...</span></div>
+      </div>
+    </div>
+
+    <!-- product_variant -->
+    <div class="tcard product-child">
+      <div class="tcard-header">product_variant <span class="col-count">21 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">id</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">product_id</span><span class="col-type">→ product.id</span></div>
+        <div class="tcard-row"><span class="col-name">title, sku, price, barcode ...</span></div>
+        <div class="tcard-row"><span class="col-name">weight, inventory_quantity ...</span></div>
+      </div>
+    </div>
+
+    <!-- product_option -->
+    <div class="tcard product-child">
+      <div class="tcard-header">product_option <span class="col-count">7 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">id</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">product_id</span><span class="col-type">→ product.id</span></div>
+        <div class="tcard-row"><span class="col-name">name, position</span></div>
+      </div>
+    </div>
+
+    <!-- product_option_value -->
+    <div class="tcard product-child">
+      <div class="tcard-header">product_option_value <span class="col-count">5 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">id</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">product_option_id</span><span class="col-type">→ product_option.id</span></div>
+        <div class="tcard-row"><span class="col-name">name, position</span></div>
+      </div>
+    </div>
+
+    <!-- product_variant_option_value -->
+    <div class="tcard product-child">
+      <div class="tcard-header">product_variant_option_value <span class="col-count">2 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">option_value_id</span><span class="col-type">→ product_option_value.id</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">variant_id</span><span class="col-type">→ product_variant.id</span></div>
+      </div>
+    </div>
+
+    <!-- product_tag -->
+    <div class="tcard product-child">
+      <div class="tcard-header">product_tag <span class="col-count">3 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">index</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">product_id</span><span class="col-type">→ product.id</span></div>
+        <div class="tcard-row"><span class="col-name">value</span><span class="col-type">text</span></div>
+      </div>
+    </div>
+
+    <!-- product_media -->
+    <div class="tcard product-child">
+      <div class="tcard-header">product_media <span class="col-count">2 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">media_id</span><span class="col-type">→ media.id</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">product_id</span><span class="col-type">→ product.id</span></div>
+      </div>
+    </div>
+
+    <!-- product_variant_media -->
+    <div class="tcard product-child">
+      <div class="tcard-header">product_variant_media <span class="col-count">2 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">media_id</span><span class="col-type">→ media.id</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">product_variant_id</span><span class="col-type">→ product_variant.id</span></div>
+      </div>
+    </div>
+
+    <!-- product_publication -->
+    <div class="tcard product-child">
+      <div class="tcard-header">product_publication <span class="col-count">2 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">product_id</span><span class="col-type">→ product.id</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">publication_id</span><span class="col-type">→ publication.id</span></div>
+      </div>
+    </div>
+
+    <!-- collection -->
+    <div class="tcard product-child">
+      <div class="tcard-header">collection <span class="col-count">15 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">id</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row"><span class="col-name">title, handle, sort_order ...</span></div>
+      </div>
+    </div>
+
+    <!-- collection_product -->
+    <div class="tcard product-child">
+      <div class="tcard-header">collection_product <span class="col-count">2 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">collection_id</span><span class="col-type">→ collection.id</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">product_id</span><span class="col-type">→ product.id</span></div>
+      </div>
+    </div>
+
+    <!-- collection_rule -->
+    <div class="tcard product-child">
+      <div class="tcard-header">collection_rule <span class="col-count">5 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">index</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">collection_id</span><span class="col-type">→ collection.id</span></div>
+        <div class="tcard-row"><span class="col-name">column, relation, condition</span></div>
+      </div>
+    </div>
+
+    <!-- bundle_component -->
+    <div class="tcard product-child">
+      <div class="tcard-header">bundle_component <span class="col-count">7 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">index</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">product_id</span><span class="col-type">→ product.id (バンドル親)</span></div>
+        <div class="tcard-row fk-row"><span class="badge-fk">FK</span><span class="col-name">component_product_id</span><span class="col-type">→ product.id (コンポーネント)</span></div>
+        <div class="tcard-row"><span class="col-name">quantity_max, quantity_min ...</span></div>
+      </div>
+    </div>
+
+    <!-- bundle_component_option_selection -->
+    <div class="tcard product-child">
+      <div class="tcard-header">bundle_component_option_selection <span class="col-count">6 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">index</span><span class="col-type">numeric</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">bundle_component_index</span><span class="col-type">→ bundle_component.index</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">product_id</span><span class="col-type">→ product.id</span></div>
+        <div class="tcard-row"><span class="col-name">component_option_id ...</span></div>
+      </div>
+    </div>
+
+    <!-- bundle_component_variant -->
+    <div class="tcard product-child">
+      <div class="tcard-header">bundle_component_variant <span class="col-count">3 columns</span></div>
+      <div class="tcard-body">
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">bundle_component_index</span><span class="col-type">→ bundle_component.index</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">component_variant_id</span><span class="col-type">→ product_variant.id</span></div>
+        <div class="tcard-row pk-row"><span class="badge-pk">PK</span><span class="col-name">product_id</span><span class="col-type">→ product.id</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== CROSS DOMAIN RELATIONS ===== -->
+<div class="domain" id="cross">
+  <div class="domain-title cross-title">クロスドメイン FK 一覧 <span class="badge">│ 3ドメイン間をまたぐ外部キー参照</span></div>
+  <div style="padding:20px;background:#fff;border:1px solid #ddd;border-top:none;border-radius:0 0 8px 8px;">
+    <table class="arrow-table">
+      <thead><tr><th>参照元テーブル</th><th>カラム</th><th></th><th>参照先テーブル</th><th>備考</th></tr></thead>
+      <tbody>
+        <tr><td>order</td><td>customer_id</td><td class="arrow">→</td><td>customer.id</td><td class="note">注文に紐づく顧客</td></tr>
+        <tr><td>order</td><td>purchasing_entity_customer_id</td><td class="arrow">→</td><td>customer.id</td><td class="note">購買エンティティ（B2B）</td></tr>
+        <tr><td>customer</td><td>last_order_id</td><td class="arrow">→</td><td>order.id</td><td class="note">最後の注文（逆参照）</td></tr>
+        <tr><td>order_line</td><td>product_id</td><td class="arrow">→</td><td>product.id</td><td class="note">注文明細 → 商品</td></tr>
+        <tr><td>order_line</td><td>variant_id</td><td class="arrow">→</td><td>product_variant.id</td><td class="note">注文明細 → バリアント</td></tr>
+        <tr><td>fulfillment_order</td><td>customer_id</td><td class="arrow">→</td><td>customer.id</td><td class="note">フルフィルメントオーダー → 顧客</td></tr>
+        <tr><td>fulfillment_order_line_item</td><td>product_variant_id</td><td class="arrow">→</td><td>product_variant.id</td><td class="note">フルフィルメント明細 → バリアント</td></tr>
+        <tr><td>fulfillment_line_item</td><td>product_id</td><td class="arrow">→</td><td>product.id</td><td class="note">出荷明細 → 商品</td></tr>
+        <tr><td>fulfillment_line_item</td><td>product_variant_id</td><td class="arrow">→</td><td>product_variant.id</td><td class="note">出荷明細 → バリアント</td></tr>
+        <tr><td>draft_order</td><td>customer_id</td><td class="arrow">→</td><td>customer.id</td><td class="note">下書き注文 → 顧客</td></tr>
+        <tr><td>draft_order</td><td>order_id</td><td class="arrow">→</td><td>order.id</td><td class="note">下書きが確定注文に</td></tr>
+        <tr><td>draft_order_line</td><td>product_id</td><td class="arrow">→</td><td>product.id</td><td class="note">下書き明細 → 商品</td></tr>
+        <tr><td>abandoned_checkout</td><td>customer_id</td><td class="arrow">→</td><td>customer.id</td><td class="note">放棄チェックアウト → 顧客</td></tr>
+        <tr><td>abandoned_checkout_line</td><td>product_id</td><td class="arrow">→</td><td>product.id</td><td class="note">放棄明細 → 商品</td></tr>
+        <tr><td>gift_card</td><td>customer_id</td><td class="arrow">→</td><td>customer.id</td><td class="note">ギフトカード → 顧客</td></tr>
+        <tr><td>gift_card</td><td>order_id</td><td class="arrow">→</td><td>order.id</td><td class="note">ギフトカード → 注文</td></tr>
+        <tr><td>refund_line_item</td><td>order_line_id</td><td class="arrow">→</td><td>order_line.id</td><td class="note">返金明細 → 注文明細</td></tr>
+        <tr><td>sales_agreement</td><td>order_id</td><td class="arrow">→</td><td>order.id</td><td class="note">販売合意 → 注文</td></tr>
+        <tr><td>sales_agreement</td><td>refund_id</td><td class="arrow">→</td><td>refund.id</td><td class="note">販売合意 → 返金</td></tr>
+        <tr><td>sales_agreement</td><td>return_id</td><td class="arrow">→</td><td>return.id</td><td class="note">販売合意 → 返品</td></tr>
+        <tr><td>refund</td><td>return_id</td><td class="arrow">→</td><td>return.id</td><td class="note">返金 → 返品</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ===== RELATION MATRIX TABLE ===== -->
+<div class="domain" id="matrix">
+  <div class="domain-title cross-title">テーブル別リレーション一覧 <span class="badge">│ 全関連テーブルのPK・FK一覧</span></div>
+  <div style="padding:20px;background:#fff;border:1px solid #ddd;border-top:none;border-radius:0 0 8px 8px;">
+    <table class="arrow-table">
+      <thead><tr><th>ドメイン</th><th>テーブル名</th><th>主キー (PK)</th><th>外部キー (FK) → 参照先</th></tr></thead>
+      <tbody>
+        <!-- Customer -->
+        <tr style="background:#e3f2fd"><td rowspan="5" style="font-weight:700;color:#1565c0;background:#bbdefb">Customer</td><td>customer</td><td>id</td><td>last_order_id → order</td></tr>
+        <tr style="background:#e3f2fd"><td>customer_address</td><td>id, customer_id</td><td>customer_id → customer</td></tr>
+        <tr style="background:#e3f2fd"><td>customer_tag</td><td>index, customer_id</td><td>customer_id → customer</td></tr>
+        <tr style="background:#e3f2fd"><td>customer_tax_exemption</td><td>index, customer_id</td><td>customer_id → customer</td></tr>
+        <tr style="background:#e3f2fd"><td>customer_visit</td><td>id</td><td>-</td></tr>
+        <!-- Order core -->
+        <tr style="background:#f3e5f5"><td rowspan="15" style="font-weight:700;color:#6a1b9a;background:#e1bee7">Order</td><td>order</td><td>id</td><td>customer_id, purchasing_entity_customer_id → customer<br>location_id, staff_member_id, ...</td></tr>
+        <tr style="background:#f3e5f5"><td>order_line</td><td>id, order_id</td><td>order_id → order<br>product_id → product<br>variant_id → product_variant</td></tr>
+        <tr style="background:#f3e5f5"><td>order_line_custom_attribute</td><td>key, order_line_id</td><td>order_line_id → order_line</td></tr>
+        <tr style="background:#f3e5f5"><td>order_line_tax_line</td><td>index, order_line_id</td><td>order_line_id → order_line</td></tr>
+        <tr style="background:#f3e5f5"><td>discount_allocation</td><td>index, order_line_id</td><td>order_line_id → order_line</td></tr>
+        <tr style="background:#f3e5f5"><td>discount_application</td><td>index, order_id</td><td>order_id → order</td></tr>
+        <tr style="background:#f3e5f5"><td>order_custom_attribute</td><td>key, order_id</td><td>order_id → order</td></tr>
+        <tr style="background:#f3e5f5"><td>order_discount_code</td><td>index, order_id</td><td>order_id → order</td></tr>
+        <tr style="background:#f3e5f5"><td>order_tag</td><td>index, order_id</td><td>order_id → order</td></tr>
+        <tr style="background:#f3e5f5"><td>order_shipping_line</td><td>id, order_id</td><td>order_id → order</td></tr>
+        <tr style="background:#f3e5f5"><td>order_shipping_tax_line</td><td>index, order_shipping_line_id</td><td>order_shipping_line_id → order_shipping_line</td></tr>
+        <tr style="background:#f3e5f5"><td>order_risk_assessment</td><td>index, order_id</td><td>order_id → order</td></tr>
+        <tr style="background:#f3e5f5"><td>order_risk_fact</td><td>index, order_id, order_risk_assessment_index</td><td>order_id → order, order_risk_assessment_index → order_risk_assessment</td></tr>
+        <tr style="background:#f3e5f5"><td>order_risk_summary</td><td>order_id</td><td>order_id → order</td></tr>
+        <tr style="background:#f3e5f5"><td>order_adjustment</td><td>id</td><td>-</td></tr>
+        <!-- Fulfillment -->
+        <tr style="background:#e0f7fa"><td rowspan="6" style="font-weight:700;color:#006064;background:#b2ebf2">Fulfillment</td><td>fulfillment_order</td><td>id, order_id</td><td>order_id → order<br>customer_id → customer</td></tr>
+        <tr style="background:#e0f7fa"><td>fulfillment_order_line_item</td><td>id, fulfillment_order_id</td><td>fulfillment_order_id → fulfillment_order<br>product_variant_id → product_variant</td></tr>
+        <tr style="background:#e0f7fa"><td>fulfillment_order_fulfillment_hold</td><td>id, fulfillment_order_id</td><td>fulfillment_order_id → fulfillment_order</td></tr>
+        <tr style="background:#e0f7fa"><td>fulfillment</td><td>id</td><td>order_id → order</td></tr>
+        <tr style="background:#e0f7fa"><td>fulfillment_line_item</td><td>id, fulfillment_id</td><td>fulfillment_id → fulfillment<br>product_id → product<br>product_variant_id → product_variant</td></tr>
+        <tr style="background:#e0f7fa"><td>fulfillment_event</td><td>id</td><td>order_id → order</td></tr>
+        <!-- Return/Refund -->
+        <tr style="background:#fff3e0"><td rowspan="5" style="font-weight:700;color:#e65100;background:#ffe0b2">Return/<br>Refund</td><td>return</td><td>id, order_id</td><td>order_id → order</td></tr>
+        <tr style="background:#fff3e0"><td>return_line_item</td><td>id, return_id</td><td>return_id → return</td></tr>
+        <tr style="background:#fff3e0"><td>return_shipping_fee</td><td>id, return_id</td><td>return_id → return</td></tr>
+        <tr style="background:#fff3e0"><td>refund</td><td>id</td><td>order_id → order<br>return_id → return</td></tr>
+        <tr style="background:#fff3e0"><td>refund_line_item</td><td>id</td><td>refund_id → refund<br>order_line_id → order_line</td></tr>
+        <!-- Payment -->
+        <tr style="background:#fce4ec"><td rowspan="4" style="font-weight:700;color:#880e4f;background:#f8bbd0">Payment</td><td>transaction</td><td>id</td><td>order_id → order</td></tr>
+        <tr style="background:#fce4ec"><td>tender_transaction</td><td>id</td><td>order_id → order</td></tr>
+        <tr style="background:#fce4ec"><td>dispute</td><td>id</td><td>order_id → order</td></tr>
+        <tr style="background:#fce4ec"><td>sales_agreement</td><td>id</td><td>order_id → order<br>refund_id → refund<br>return_id → return</td></tr>
+        <!-- Draft/Checkout -->
+        <tr style="background:#eceff1"><td rowspan="8" style="font-weight:700;color:#263238;background:#cfd8dc">Draft/<br>Checkout</td><td>draft_order</td><td>id</td><td>customer_id → customer<br>order_id → order</td></tr>
+        <tr style="background:#eceff1"><td>draft_order_line</td><td>id, draft_order_id</td><td>draft_order_id → draft_order<br>product_id → product</td></tr>
+        <tr style="background:#eceff1"><td>draft_order_line_custom_attribute</td><td>key, draft_order_line_id</td><td>draft_order_line_id → draft_order_line</td></tr>
+        <tr style="background:#eceff1"><td>draft_order_line_tax_line</td><td>index, draft_order_line_id</td><td>draft_order_line_id → draft_order_line</td></tr>
+        <tr style="background:#eceff1"><td>draft_order_custom_attribute</td><td>key, draft_order_id</td><td>draft_order_id → draft_order</td></tr>
+        <tr style="background:#eceff1"><td>draft_order_tag</td><td>index, draft_order_id</td><td>draft_order_id → draft_order</td></tr>
+        <tr style="background:#eceff1"><td>draft_order_tax_line</td><td>index, draft_order_id</td><td>draft_order_id → draft_order</td></tr>
+        <tr style="background:#eceff1"><td>abandoned_checkout</td><td>id</td><td>customer_id → customer</td></tr>
+        <!-- Product -->
+        <tr style="background:#e8f5e9"><td rowspan="13" style="font-weight:700;color:#1b5e20;background:#c8e6c9">Product</td><td>product</td><td>id</td><td>-</td></tr>
+        <tr style="background:#e8f5e9"><td>product_variant</td><td>id, product_id</td><td>product_id → product</td></tr>
+        <tr style="background:#e8f5e9"><td>product_option</td><td>id</td><td>product_id → product</td></tr>
+        <tr style="background:#e8f5e9"><td>product_option_value</td><td>id, product_option_id</td><td>product_option_id → product_option</td></tr>
+        <tr style="background:#e8f5e9"><td>product_variant_option_value</td><td>option_value_id, variant_id</td><td>option_value_id → product_option_value<br>variant_id → product_variant</td></tr>
+        <tr style="background:#e8f5e9"><td>product_tag</td><td>index, product_id</td><td>product_id → product</td></tr>
+        <tr style="background:#e8f5e9"><td>product_media</td><td>media_id, product_id</td><td>media_id → media<br>product_id → product</td></tr>
+        <tr style="background:#e8f5e9"><td>product_variant_media</td><td>media_id, product_variant_id</td><td>media_id → media<br>product_variant_id → product_variant</td></tr>
+        <tr style="background:#e8f5e9"><td>product_publication</td><td>product_id, publication_id</td><td>product_id → product<br>publication_id → publication</td></tr>
+        <tr style="background:#e8f5e9"><td>collection</td><td>id</td><td>-</td></tr>
+        <tr style="background:#e8f5e9"><td>collection_product</td><td>collection_id, product_id</td><td>collection_id → collection<br>product_id → product</td></tr>
+        <tr style="background:#e8f5e9"><td>collection_rule</td><td>index, collection_id</td><td>collection_id → collection</td></tr>
+        <tr style="background:#e8f5e9"><td>bundle_component</td><td>index, product_id</td><td>product_id → product (バンドル親)<br>component_product_id → product (コンポーネント)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<p style="text-align:center;color:#aaa;font-size:11px;margin:32px 0 24px;">Generated from table_definitions.html &nbsp;|&nbsp; 136 tables total</p>
+
+</main>
+
+<script>
+// Smooth scroll for nav links
+document.querySelectorAll('.nav a').forEach(a => {
+  a.addEventListener('click', function(e) {
+    const href = this.getAttribute('href');
+    if (href.startsWith('#')) {
+      e.preventDefault();
+      document.querySelector(href).scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+});
+</script>
+</body>
+</html>
